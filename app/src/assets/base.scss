@@ -1,0 +1,12 @@
+:root {
+    // Define variables here
+    --color-text: #0e0e0fd8;
+    --color-background: #f7f2d8;
+    --color-accent-primary: #0892fb;
+    --color-accent-secondary: #fb0881;
+
+    --font-default-serif: "Young Serif", serif;
+    --font-default-sans: "Inter", sans-serif;
+    --font-headings: var(--font-default-serif);
+    --font-body: var(--font-default-sans);
+}
