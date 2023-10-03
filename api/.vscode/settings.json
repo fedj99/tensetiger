@@ -15,18 +15,6 @@
         "source.fixAll": true,
         "source.organizeImports": true
     },
-    "python.analysis.extraPaths": [
-        "api"
-    ],
-    "python.analysis.include": [
-        "api/**"
-    ],
-    "python.autoComplete.extraPaths": [
-        "api"
-    ],
-    "pylint.args": [
-        "--rcfile=api/pyproject.toml"
-    ],
     "pylint.importStrategy": "fromEnvironment",
     "editor.rulers": [
         100
