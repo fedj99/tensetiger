@@ -6,3 +6,7 @@ disable = [
     "missing-class-docstring",
 ]
 source-roots = ['api']
+
+[tool.black]
+
+line-length = 100

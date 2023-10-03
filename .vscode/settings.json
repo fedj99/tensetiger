@@ -27,5 +27,9 @@
     "pylint.args": [
         "--rcfile=api/pyproject.toml"
     ],
-    "pylint.importStrategy": "fromEnvironment"
+    "pylint.importStrategy": "fromEnvironment",
+    "editor.rulers": [
+        100
+    ],
+    "python.analysis.diagnosticMode": "workspace"
 }

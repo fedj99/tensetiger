@@ -1,2 +1,6 @@
 pylint
-flask
+black
+Flask
+Flask-Cors
+rich
+psycopg2
