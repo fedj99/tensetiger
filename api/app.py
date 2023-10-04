@@ -1,9 +1,10 @@
 import os
 
 import rich.traceback
-from db import DB, T_SCORES
 from flask import Flask, make_response, request
 from flask_cors import CORS
+
+from db import DB, T_SCORES, T_WORDS
 
 rich.traceback.install()
 
@@ -39,3 +40,12 @@ def add_score():
     response = make_response({"success": success})
     response.status_code = 201 if success else 400
     return response
+
+
+@app.get("/api/words")
+def get_all_words():
+    if "count" in request.args:
+        count = int(request.args["count"])
+        return db.get_random_subset(T_WORDS, count)
+    else:
+        return db.get_all(T_WORDS)

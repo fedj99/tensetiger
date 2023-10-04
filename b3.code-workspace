@@ -8,6 +8,7 @@
 		}
 	],
     "settings": {
-        "pylint.importStrategy": "fromEnvironment"
+		"pylint.importStrategy": "fromEnvironment",
+		"editor.linkedEditing": true
     }
 }

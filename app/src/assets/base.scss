@@ -1,12 +1,37 @@
 :root {
     // Define variables here
-    --color-text: #0e0e0fd8;
+    --color-text: #0f0e0ed8;
+    --color-text-rgb: 14, 14, 15;
     --color-background: #f7f2d8;
     --color-accent-primary: #0892fb;
+    --color-accent-primary-rgb: 8, 146, 251;
+    --color-contrast-primary: #fff;
     --color-accent-secondary: #fb0881;
+    --color-contrast-secondary: #fff;
 
     --font-default-serif: "Young Serif", serif;
     --font-default-sans: "Inter", sans-serif;
     --font-headings: var(--font-default-serif);
     --font-body: var(--font-default-sans);
+
+    --font-size-small: 11pt;
+    --font-size-regular: 14pt;
+    --font-size-large: 18pt;
+    --font-size-huge: 36pt;
+
+    --padding-sm: 0.2em;
+    --padding: 0.5em;
+    --padding-lg: 0.8em;
+    --padding-huge: 1.2em;
+
+    --gap-sm: 0.4em;
+    --gap: 0.7em;
+    --gap-lg: 1em;
+
+    --br-sm: 0.3em;
+    --br: 0.5em;
+    --br-lg: 0.8em;
+
+    --border-width: 2px;
+    --outline-width: 3px;
 }

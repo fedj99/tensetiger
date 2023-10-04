@@ -1,9 +1,20 @@
+@use "sass:color";
+
+/* GENERAL */
+
 html,
 body {
     padding: 0;
     margin: 0;
 
     background-color: var(--color-background);
+    font-family: var(--font-body);
+    font-size: var(--font-size-regular);
+    color: var(--color-text);
+}
+
+* {
+    box-sizing: border-box;
 }
 
 html {
@@ -15,10 +26,7 @@ body {
     min-height: 100%;
 }
 
-* {
-    font-family: var(--font-body);
-    color: var(--color-text);
-}
+/* HEADINGS */
 
 h1,
 h2,
@@ -28,3 +36,96 @@ h5,
 h6 {
     font-family: var(--font-default-serif);
 }
+
+h1 {
+    font-size: 3.2rem;
+}
+
+h2 {
+    font-size: 2.5rem;
+}
+
+h3 {
+    font-size: 1.9rem;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
+h5 {
+    font-size: 1.2rem;
+}
+
+h6 {
+    font-size: 1rem;
+}
+
+/* FORMS */
+
+input[type="submit"],
+input[type="reset"],
+button,
+.button {
+    font-size: var(--font-size-regular);
+    padding: var(--padding);
+    border: none;
+    outline: 0 solid rgba(var(--color-accent-primary-rgb), 0.3);
+    background-color: var(--color-accent-primary);
+    color: var(--color-contrast-primary);
+    border-radius: var(--br-sm);
+    font-weight: bold;
+
+    transition:
+        filter 200ms,
+        background-color 200ms,
+        outline-width 100ms;
+
+    &:focus {
+        outline-width: var(--outline-width);
+    }
+
+    &:hover {
+        cursor: pointer;
+        filter: brightness(0.8);
+    }
+
+    &:active {
+        filter: none;
+        background-color: var(--color-accent-secondary);
+    }
+
+    &:is(a) {
+        text-decoration: none;
+    }
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="search"],
+input[type="time"],
+input[type="url"],
+input[type="week"] {
+    font-size: var(--font-size-regular);
+    padding: var(--padding);
+    background-color: rgba(var(--color-text-rgb), 0.07);
+    border: none;
+    outline: 0 solid rgba(var(--color-text-rgb), 0.12);
+    border-radius: var(--br-sm);
+    transition:
+        background-color 200ms,
+        outline-width 100ms;
+
+    &:focus {
+        background-color: rgba(var(--color-text-rgb), 0.09);
+        outline-width: var(--outline-width);
+    }
+}
+
+/* TABLES */

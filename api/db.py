@@ -1,8 +1,10 @@
 import psycopg2
 from flask import Flask
 from psycopg2 import sql
+from psycopg2.extras import RealDictCursor
 
 T_SCORES = "scores"
+T_WORDS = "words"
 
 
 class DB:
@@ -28,9 +30,21 @@ class DB:
             self.conn.close()
             self.conn = None
 
+    def default_cursor(self):
+        return self.conn.cursor(cursor_factory=RealDictCursor)
+
     def get_all(self, table: str):
-        with self.conn.cursor() as cur:
+        with self.default_cursor() as cur:
             cur.execute(sql.SQL("SELECT * FROM {}").format(sql.Identifier(table)))
+            return cur.fetchall()
+
+    def get_random_subset(self, table: str, subset_size: int):
+        with self.default_cursor() as cur:
+            cur.execute(
+                sql.SQL("SELECT * FROM {} ORDER BY RANDOM() LIMIT {}").format(
+                    sql.Identifier(table), sql.Literal(subset_size)
+                )
+            )
             return cur.fetchall()
 
     def create(self, table: str, data: dict):
@@ -42,7 +56,7 @@ class DB:
             *(sql.Identifier(k) for k in data.keys()),
             *(sql.Literal(v) for v in data.values()),
         )
-        with self.conn.cursor() as cur:
+        with self.default_cursor() as cur:
             cur.execute(query.format(*values), values)
             rowcount = cur.rowcount
         self.conn.commit()

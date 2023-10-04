@@ -1,4 +1,5 @@
 import "@/assets/base.scss"
+import "@/assets/components.scss"
 import "@/assets/main.scss"
 
 import { createPinia } from 'pinia'
