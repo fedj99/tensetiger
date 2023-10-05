@@ -5,10 +5,13 @@
 		},
 		{
 			"path": "app"
+		},
+		{
+			"path": "."
 		}
 	],
-    "settings": {
+	"settings": {
 		"pylint.importStrategy": "fromEnvironment",
 		"editor.linkedEditing": true
-    }
+	}
 }

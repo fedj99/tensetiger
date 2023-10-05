@@ -4,3 +4,5 @@ Flask
 Flask-Cors
 rich
 psycopg2
+python-dotenv
+gunicorn
