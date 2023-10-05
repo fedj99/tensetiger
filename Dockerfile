@@ -34,6 +34,8 @@ FROM python:3.10 AS deploy
 
 # Needs to be set for gunicorn to find app
 ENV PYTHONPATH=src
+ENV FLASK_CONFIG=docker_local
+ENV FLASK_DB_PASSWORD=root
 
 # Inherit variables from global scope
 ARG API_SOURCE
@@ -43,11 +45,14 @@ ARG BUILD_OUTPUT_DIR
 
 WORKDIR ${API_WORKDIR}
 
+# First copy only requirements file and install dependencies (speed up docker build)
+COPY ${API_SOURCE}/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Copy api folder
 COPY ${API_SOURCE} .
 # Copy app build files to static files
 COPY --from=build ${BUILD_OUTPUT_DIR} ${STATIC_DIR}
-# Install python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["gunicorn", "run:app"]
+EXPOSE 8000
