@@ -20,29 +20,26 @@ FROM node:18 AS build
 ARG APP_SOURCE
 ARG APP_WORKDIR
 
-# Install additional build dependencies
-RUN apt-get update && apt-get install --no-install-recommends -y tree
-
 WORKDIR ${APP_WORKDIR}
 
 # Build Vue app
 COPY ${APP_SOURCE} .
-RUN npm install
-RUN npm run build
+RUN npm install \
+	&& npm run build
 
 
 ### STAGE 2: DEPLOY
 
 FROM python:3.10 AS deploy
 
+# Needs to be set for gunicorn to find app
+ENV PYTHONPATH=src
+
 # Inherit variables from global scope
 ARG API_SOURCE
 ARG API_WORKDIR
 ARG STATIC_DIR
 ARG BUILD_OUTPUT_DIR
-
-# Install additional runtime dependencies
-RUN apt-get update && apt-get install --no-install-recommends -y tree
 
 WORKDIR ${API_WORKDIR}
 
@@ -51,8 +48,6 @@ COPY ${API_SOURCE} .
 # Copy app build files to static files
 COPY --from=build ${BUILD_OUTPUT_DIR} ${STATIC_DIR}
 # Install python dependencies
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# # Run app with gunicorn
-# EXPOSE 80
-# CMD ["gunicorn", "--bind", "0.0.0.0:80", "run:app"]
+CMD ["gunicorn", "run:app"]

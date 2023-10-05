@@ -15,9 +15,8 @@
         "source.fixAll": true,
         "source.organizeImports": true
     },
-    "pylint.importStrategy": "fromEnvironment",
     "editor.rulers": [
         100
     ],
-    "python.analysis.diagnosticMode": "workspace"
+    "python.analysis.diagnosticMode": "workspace",
 }
