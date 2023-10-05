@@ -19,8 +19,11 @@ def create_app():
     # Configuration
     config.setup_config(app, config_mode)
 
+    # Set secret key for session cookies
+    app.secret_key = app.config["COOKIES_SK"]
+
     # Enable CORS
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
     # Register database commands and teardown command
     db.init_app(app)

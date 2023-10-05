@@ -1,11 +1,36 @@
 import os
+from datetime import datetime
+from time import time
 
-from flask import Flask, make_response, request
+from flask import Flask, jsonify, make_response, request, session
 
 import db
 
 
 def setup_routes(app: Flask):
+    @app.get("/ping")
+    def ping():
+        return jsonify("pong")
+
+    @app.post("/api/login")
+    def login():
+        username = request.json["username"]
+        user = db.find_by(db.T_USERS, "username", username, single=True)
+        if user:
+            # Update last login time
+            db.update(db.T_USERS, user["id"], {"last_logon": datetime.now().isoformat()})
+        else:
+            # Create user
+            user_id = db.create(db.T_USERS, {"username": username})
+            user = db.find_by_id(db.T_USERS, user_id)
+
+        response = jsonify({"success": True, "user": user})
+        # session["sess_username"] = user["username"]
+        # session["sess_user_id"] = user["id"]
+        response.set_cookie("username", user["username"], samesite="lax")
+        response.set_cookie("user_id", str(user["id"]), samesite="lax")
+        return response
+
     @app.get("/api/")
     def index():
         return f"<p>{app.config['APP_NAME']}</p>"
