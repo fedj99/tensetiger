@@ -53,6 +53,6 @@ COPY --from=build ${BUILD_OUTPUT_DIR} ${STATIC_DIR}
 # Install python dependencies
 RUN pip install -r requirements.txt
 
-# Run app with gunicorn
-EXPOSE 80
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "run:app"]
+# # Run app with gunicorn
+# EXPOSE 80
+# CMD ["gunicorn", "--bind", "0.0.0.0:80", "run:app"]
