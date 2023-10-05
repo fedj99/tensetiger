@@ -92,6 +92,7 @@ function submit() {
     border-radius: var(--br);
     padding: var(--padding);
     margin: var(--padding) 0;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.12);
 }
 
 .verb-form {

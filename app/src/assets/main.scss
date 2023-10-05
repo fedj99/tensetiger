@@ -31,7 +31,16 @@ hr {
     border: none;
     height: var(--border-width);
     background-color: rgba(var(--color-text-rgb), 0.1);
-    margin: var(--padding-lg) 0;
+    margin: var(--padding-huge) 0;
+}
+
+pre,
+code {
+    display: inline-block;
+    font-family: var(--font-default-mono);
+    background-color: rgba(var(--color-text-rgb), 0.15);
+    padding: var(--padding-sm);
+    border-radius: var(--br-sm);
 }
 
 /* HEADINGS */
@@ -83,6 +92,8 @@ button,
     color: var(--color-contrast-primary);
     border-radius: var(--br-sm);
     font-weight: bold;
+
+    box-shadow: 0 0 0.7em rgba(var(--color-accent-primary-rgb), 0.7);
 
     transition:
         filter 200ms,

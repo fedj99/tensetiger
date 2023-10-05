@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useGameStore } from "@/stores/game";
 import { computed } from "vue";
 
 const props = withDefaults(
@@ -7,10 +6,8 @@ const props = withDefaults(
         total: number;
         progress: number;
     }>(),
-    { total: 100, progress: 50 }
+    { total: 0, progress: 0 }
 );
-
-const gameStore = useGameStore();
 
 const fillRatio = computed(() => props.progress / props.total);
 const fillPercent = computed(() => fillRatio.value * 100);
@@ -41,6 +38,8 @@ const fillPercent = computed(() => fillRatio.value * 100);
     display: flex;
     justify-content: center;
     align-items: center;
+
+    box-shadow: 0 0 1em rgba(var(--color-accent-secondary-rgb), 0.3);
     .text {
         font-weight: bold;
         color: var(--color-accent-secondary);

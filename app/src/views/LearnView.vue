@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import Centered from "@/components/Centered.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
-import Logo from "@/components/Logo.vue";
+// import Logo from "@/components/Logo.vue";
 import ProgressBar from "@/components/ProgressBar.vue";
+import Score from "@/components/Score.vue";
 import WordForm from "@/components/WordForm.vue";
-import { getPointsFor } from "@/game";
+import { getResult, type Mistake } from "@/game";
 import { useGameStore } from "@/stores/game";
 import { type Answer, type Word, type WordFormKey } from "@/words";
 import { onMounted, ref, watch } from "vue";
@@ -69,8 +70,24 @@ function fetchWordList() {
 
 function onSubmit(word: Word, shownKey: WordFormKey, answer: Answer) {
     // Compute points
-    const points = getPointsFor(word, shownKey, answer);
-    gameStore.addPoints(points);
+    const result = getResult(word, shownKey, answer);
+    console.log("Result:", result);
+    gameStore.addPoints(result.points);
+
+    if (result.hasMistakes) {
+        const mistakeToString = (mistake: Mistake) => {
+            if (mistake.actual.includes(",")) {
+                return `Some of your answers ("${mistake.actual}") are not correct (should be one of "${mistake.expected}")`;
+            } else if (mistake.expected.includes(",")) {
+                return `Your answered "${mistake.actual}" which is not one of "${mistake.expected}"`;
+            }
+            return `Your answered "${mistake.actual}" but the correct answer is "${mistake.expected}"`;
+        };
+
+        const lines = ["You have some mistakes :(", "", ...result.mistakes.map(mistakeToString)];
+        const text = lines.join("\n");
+        alert(text);
+    }
 
     if (gameStore.progress >= gameStore.wordCount - 1) {
         endRound();
@@ -104,7 +121,8 @@ function endRound() {
                     </RouterLink>
                 </div>
 
-                <Logo></Logo>
+                <Score :score="gameStore.score"></Score>
+                <!-- <Logo></Logo> -->
 
                 <ProgressBar
                     :total="gameStore.wordCount"
@@ -121,9 +139,16 @@ function endRound() {
                     @submit="onSubmit"
                 ></WordForm>
 
-                <p>
-                    Fill in the missing verb forms! If there are multiple correct forms, choose one.
-                </p>
+                <hr />
+
+                <div class="par">
+                    <strong>Fill in the missing verb forms!</strong>
+                    <ul class="rules">
+                        <li>If there are multiple correct verb forms, choose one.</li>
+                        <li>If a verb form does not exist, write <code>(nothing)</code>.</li>
+                        <li>You will lose points if you answer incorrectly!</li>
+                    </ul>
+                </div>
             </main>
         </Centered>
     </Fullscreen>
@@ -134,6 +159,20 @@ function endRound() {
 
 .main {
     width: min(90vw, 50em);
+}
+
+.par {
+    max-width: max-content;
+    margin: auto;
+}
+
+.rules {
+    list-style: "👉🏿";
+    line-height: 1.5em;
+
+    &:is(ul) li {
+        padding-left: 0.5em;
+    }
 }
 
 .player {

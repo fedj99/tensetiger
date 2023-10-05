@@ -41,7 +41,7 @@ export const useGameStore = defineStore("game", () => {
     }
 
     return {
-        points: score,
+        score,
         progress,
         wordCount,
         words,
