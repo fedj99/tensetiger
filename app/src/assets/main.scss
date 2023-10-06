@@ -45,11 +45,22 @@ hr {
 
 pre,
 code {
-    display: inline-block;
     font-family: var(--font-default-mono);
     background-color: rgba(var(--color-text-rgb), 0.15);
     padding: var(--padding-sm);
     border-radius: var(--br-sm);
+}
+
+code {
+    display: inline-block;
+}
+
+pre {
+    overflow-x: scroll;
+    font-size: var(--font-size-regular);
+    font-family: var(--font-default-mono);
+    text-align: left;
+    padding: var(--padding);
 }
 
 a {

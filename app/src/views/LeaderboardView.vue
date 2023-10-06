@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getHighscore, getLatestScores, getScore, getTopKScores } from "@/api";
+import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import ScoreTable from "@/components/ScoreTable.vue";
 import type { Score } from "@/game";
@@ -55,6 +56,7 @@ onMounted(async () => {
         personalHighScore.value = highscoreRes.data as Score;
         loading.value = false;
     } catch (e) {
+        console.log(e);
         error.value = e;
     }
 });
@@ -68,7 +70,9 @@ async function resetGame() {
 <template>
     <Fullscreen center style="padding-bottom: 5em">
         <div v-if="loading && !error" class="loading">Loading...</div>
-        <div v-else-if="error" class="error">Error: {{ error }}</div>
+        <div v-else-if="error" class="error">
+            <AxiosErrorWidget :error="error"></AxiosErrorWidget>
+        </div>
         <div v-else>
             <h1>
                 {{ greeting }}, <span class="username">{{ username }}</span

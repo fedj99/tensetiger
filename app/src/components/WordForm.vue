@@ -25,6 +25,8 @@ const emit = defineEmits<{
     (e: "next"): void;
 }>();
 
+defineExpose({ focusFirst });
+
 const editableWords = ref<Answer>(emptyAnswer());
 const hintRevealed = ref<boolean>(false);
 const submitDisabled = ref<boolean>(false);
@@ -46,8 +48,6 @@ const hintStyle = computed(() => {
 watch(
     [() => props.word, () => props.shownKey],
     ([word, shownKey]) => {
-        // Focus first field
-        if (inputFields.value?.length) inputFields.value[0].focus();
         // Reset some buttons
         hintRevealed.value = false;
         submitDisabled.value = false;
@@ -80,6 +80,11 @@ function submit() {
 function revealHint() {
     hintRevealed.value = true;
     emit("revealHint");
+}
+
+function focusFirst() {
+    // Focus first field
+    if (inputFields.value?.length) inputFields.value[0].focus();
 }
 </script>
 

@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 from glob import glob
 
-from flask import Flask, jsonify, redirect, request, send_file, send_from_directory
+from flask import Flask, jsonify, make_response, redirect, request, send_file, send_from_directory
 
 import db
 
@@ -34,11 +34,11 @@ def setup_routes(app: Flask):
 
     @app.get("/api/")
     def index():
-        return f"<p>{app.config['APP_NAME']}</p>"
+        return jsonify(app.config["APP_NAME"])
 
     @app.get("/api/scores")
     def scores():
-        return db.get_all(db.T_SCORES)
+        return jsonify(db.get_all(db.T_SCORES))
 
     @app.post("/api/scores")
     def post_score():
@@ -49,31 +49,31 @@ def setup_routes(app: Flask):
     @app.get("/api/scores/topk")
     def get_top_k_scores():
         k = int(request.args.get("k", 5))
-        return db.get_top_k(db.T_SCORES, "score", k)
+        return jsonify(db.get_top_k(db.T_SCORES, "score", k))
 
     @app.get("/api/scores/latest")
     def get_latest_scores():
         user_id = int(request.args.get("user_id", -1))
         k = int(request.args.get("k", 5))
-        return db.get_top_k_filtered(db.T_SCORES, "date", "user_id", user_id, k)
+        return jsonify(db.get_top_k_filtered(db.T_SCORES, "date", "user_id", user_id, k))
 
     @app.get("/api/scores/highscore")
     def get_highscore():
         user_id = int(request.args.get("user_id", -1))
-        return db.get_max(db.T_SCORES, "score", "user_id", user_id)
+        return jsonify(db.get_max(db.T_SCORES, "score", "user_id", user_id))
 
     @app.get("/api/scores/<int:id>")
     def get_score(id: int):
-        return db.find_by_id(db.T_SCORES, id)
+        return jsonify(db.find_by_id(db.T_SCORES, id))
 
     @app.get("/api/words")
     def get_all_words():
-        return db.get_all(db.T_WORDS)
+        return jsonify(db.get_all(db.T_WORDS))
 
     @app.get("/api/words/batch")
     def get_word_batch():
         game_config = app.config["GAME_CONFIG"]
-        return db.get_random_subset(db.T_WORDS, game_config["wordCount"])
+        return jsonify(db.get_random_subset(db.T_WORDS, game_config["wordCount"]))
 
     @app.get("/api/game-config")
     def game_config():
@@ -102,14 +102,23 @@ def setup_routes(app: Flask):
         # Otherwise, this is a Vue route, let Vue try to handle it
         return send_from_directory(frontend_path, "index.html")
 
+    def jsonify_exc(e: Exception):
+        return jsonify({"error": e.__class__.__name__, "message": str(e)})
+
     @app.errorhandler(404)
-    def not_found(e):
+    def not_found(e: Exception):
+        if request.is_json:
+            return jsonify_exc(e), 404
         return redirect("/not-found")
 
     @app.errorhandler(400)
     def bad_request(e):
+        if request.is_json:
+            return jsonify_exc(e), 400
         return redirect("/bad-request")
 
     @app.errorhandler(500)
     def internal_server_error(e):
+        if request.is_json:
+            return jsonify_exc(e), 500
         return redirect("/internal-server-error")

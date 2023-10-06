@@ -7,7 +7,7 @@ import { computed, ref } from "vue";
 export const LS_WORDS_KEY = "words";
 export const LS_WORD_COUNT_KEY = "word-count";
 export const LS_WORD_PROGRESS_KEY = "word-progress";
-export const LS_SCORE_KEY = "points";
+export const LS_SCORE_KEY = "score";
 export const LS_SHOWN_KEY = "shown-key";
 
 export const useGameStore = defineStore("game", () => {
@@ -16,7 +16,7 @@ export const useGameStore = defineStore("game", () => {
     const progress = ref(0);
     const wordCount = ref(0);
     const words = ref<Word[]>([]);
-    const currentWord = computed(() => words.value[progress.value]);
+    const currentWord = computed(() => words.value[Math.min(progress.value, wordCount.value - 1)]); // Never go over boundaries
     const shownKey = ref<WordFormKey>("form_infinitive");
 
     const config = computed(() => {

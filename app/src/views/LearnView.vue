@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { postScore } from "@/api";
+import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Centered from "@/components/Centered.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 // import Logo from "@/components/Logo.vue";
@@ -16,7 +17,7 @@ import {
     useGameStore,
 } from "@/stores/game";
 import { type Answer, type Word, type WordFormKey } from "@/words";
-import { onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
 
@@ -30,6 +31,7 @@ const error = ref(null);
 const userName = ref<string>("");
 const userId = ref<number>(-1);
 const currentResult = ref<Result | undefined>(undefined);
+const wordFormRef = ref<InstanceType<typeof WordForm> | null>(null);
 
 // Watch when route changes, then get a new (or cached word list)
 watch([() => route.params], () => loadOrFetchWordList(), { immediate: true });
@@ -65,8 +67,7 @@ async function newRound() {
         console.log("Fetching a fresh round");
         loading.value = true;
         await Promise.all([gameStore.reset(), gameStore.fetchGameConfig()]);
-
-        // Progress is automatically saved
+        // Watchers automatically save value
     } catch (e: any) {
         error.value = e;
     } finally {
@@ -123,7 +124,12 @@ function loadOrFetchWordList() {
         newRound();
     }
 
-    console.log("Round started");
+    nextTick(() => {
+        setTimeout(() => {
+            wordFormRef.value?.focusFirst();
+            console.log("Round started");
+        }, 200);
+    });
 }
 
 function saveProgress(
@@ -161,24 +167,29 @@ async function endRound() {
 
 // Button handlers
 function onSubmit(word: Word, shownKey: WordFormKey, answer: Answer) {
+    console.log("Submit", shownKey, answer);
     // Compute points
     const result = getResult(gameStore.config, word, shownKey, answer);
     gameStore.addPoints(result.points);
 
     // Set the result so the word widget shows the info
     currentResult.value = result;
-}
-
-function onNext() {
-    // Hide result
-    currentResult.value = undefined;
-
-    if (gameStore.progress >= gameStore.wordCount - 1) {
-        endRound();
-    }
 
     // Get next word
     gameStore.next();
+}
+
+function onNext() {
+    console.log("Next");
+    // Hide result
+    currentResult.value = undefined;
+
+    if (gameStore.progress >= gameStore.wordCount) {
+        endRound();
+    }
+
+    // Focus input
+    wordFormRef.value?.focusFirst();
 }
 
 function onHintRevealed() {
@@ -190,7 +201,9 @@ function onHintRevealed() {
     <Fullscreen>
         <Centered>
             <main v-if="loading && !error">Loading...</main>
-            <main v-else-if="error">Error: {{ error }}</main>
+            <main v-else-if="error">
+                <AxiosErrorWidget :error="error"></AxiosErrorWidget>
+            </main>
             <main v-else class="main">
                 <div class="player">
                     <span>
@@ -224,6 +237,7 @@ function onHintRevealed() {
                     @submit="onSubmit"
                     @reveal-hint="onHintRevealed"
                     @next="onNext"
+                    ref="wordFormRef"
                 ></WordForm>
 
                 <hr />

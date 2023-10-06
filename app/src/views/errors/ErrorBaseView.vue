@@ -29,6 +29,10 @@ function makeImageURL(imageName: string) {
 </template>
 
 <style lang="scss" scoped>
+.base {
+    margin: 2em;
+}
+
 img {
     width: min(80vw, 20em);
 }
