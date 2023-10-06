@@ -2,8 +2,9 @@ import json
 import os
 from datetime import datetime
 from glob import glob
+from urllib.parse import quote
 
-from flask import Flask, jsonify, make_response, redirect, request, send_file, send_from_directory
+from flask import Flask, jsonify, redirect, request, send_file, send_from_directory
 
 import db
 
@@ -28,8 +29,8 @@ def setup_routes(app: Flask):
         response = jsonify({"success": True, "user": user})
         # session["sess_username"] = user["username"]
         # session["sess_user_id"] = user["id"]
-        response.set_cookie("username", user["username"], samesite="lax")
-        response.set_cookie("user_id", str(user["id"]), samesite="lax")
+        response.set_cookie("username", quote(user["username"]), samesite="lax")
+        response.set_cookie("user_id", quote(str(user["id"])), samesite="lax")
         return response
 
     @app.get("/api/")

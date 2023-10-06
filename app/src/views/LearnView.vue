@@ -52,9 +52,9 @@ watch(
 // Get current logged in user
 onMounted(() => {
     const { cookies } = useCookies();
-    userName.value = cookies.get("username");
-    userId.value = parseInt(cookies.get("user_id"));
-    if (!userName.value) {
+    userName.value = decodeURI(cookies.get("username"));
+    userId.value = parseInt(decodeURI(cookies.get("user_id")));
+    if (userName.value == "null") {
         alert("Please enter a username first");
         useRouter().push({ name: "login" });
     }

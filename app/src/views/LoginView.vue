@@ -45,6 +45,7 @@ onMounted(() => {
                     id="username"
                     type="text"
                     placeholder="Enter a username..."
+                    maxlength="32"
                 />
                 <button type="submit" class="input-huge">
                     <i class="ri-arrow-right-double-line"></i> Start Learning
