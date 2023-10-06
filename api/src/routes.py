@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from glob import glob
 
-from flask import Flask, jsonify, make_response, request, send_file, send_from_directory
+from flask import Flask, jsonify, make_response, redirect, request, send_file, send_from_directory
 
 import db
 
@@ -76,3 +76,15 @@ def setup_routes(app: Flask):
 
         # Otherwise, this is a Vue route, let Vue try to handle it
         return send_from_directory(frontend_path, "index.html")
+
+    @app.errorhandler(404)
+    def not_found(e):
+        return redirect("/not-found")
+
+    @app.errorhandler(400)
+    def bad_request(e):
+        return redirect("/bad-request")
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return redirect("/internal-server-error")
