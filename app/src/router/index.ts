@@ -3,6 +3,7 @@ import LeaderboardView from "@/views/LeaderboardView.vue";
 import LearnView from "@/views/LearnView.vue";
 import LoginView from "@/views/LoginView.vue";
 import BadRequestView from "@/views/errors/BadRequestView.vue";
+import GenericErrorView from "@/views/errors/GenericErrorView.vue";
 import InternalServerErrorView from "@/views/errors/InternalServerErrorView.vue";
 import NotFoundView from "@/views/errors/NotFoundView.vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -54,6 +55,11 @@ const router = createRouter({
             path: "/internal-server-error",
             name: "internal-server-error",
             component: InternalServerErrorView,
+        },
+        {
+            path: "/generic-error",
+            name: "generic-error",
+            component: GenericErrorView,
         },
         {
             path: "/:catchAll(.*)",

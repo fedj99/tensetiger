@@ -1,12 +1,26 @@
 <script setup lang="ts">
 import Fullscreen from "@/components/Fullscreen.vue";
+
+interface Props {
+    imageName?: string;
+    imageAlt?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+    imageName: "sorry",
+    imageAlt: "Error",
+});
+
+function makeImageURL(imageName: string) {
+    return new URL(`../../assets/img/errors/${imageName}.svg`, import.meta.url).href;
+}
 </script>
 
 <template>
     <Fullscreen :center="true">
         <main class="base">
-            <img src="@/assets/img/not-found.svg" alt="404 Not Found" />
-            <p>You didn't break the internet, but we can't find what you're looking for.</p>
+            <img :src="makeImageURL(imageName)" :alt="props.imageAlt" />
+            <p><slot>Aw, shucks! Something went wrong on our end.</slot></p>
             <RouterLink :to="{ name: 'login' }" class="button"
                 ><i class="ri-home-5-fill"></i> Return Home</RouterLink
             >

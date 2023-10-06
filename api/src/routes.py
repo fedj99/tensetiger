@@ -68,11 +68,12 @@ def setup_routes(app: Flask):
 
     @app.get("/api/words")
     def get_all_words():
-        if "count" in request.args:
-            count = int(request.args["count"])
-            return db.get_random_subset(db.T_WORDS, count)
-        else:
-            return db.get_all(db.T_WORDS)
+        return db.get_all(db.T_WORDS)
+
+    @app.get("/api/words/batch")
+    def get_word_batch():
+        game_config = app.config["GAME_CONFIG"]
+        return db.get_random_subset(db.T_WORDS, game_config["wordCount"])
 
     @app.get("/api/game-config")
     def game_config():

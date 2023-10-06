@@ -39,6 +39,13 @@ import Fullscreen from "@/components/Fullscreen.vue";
                 >
                 on Freepik
             </li>
+            <li>
+                <a
+                    href="https://www.freepik.com/free-vector/feeling-sorry-concept-illustration_10386553.htm#page=3&query=error&position=42&from_view=author"
+                    >Image by storyset</a
+                >
+                on Freepik
+            </li>
         </ul>
     </Fullscreen>
 </template>

@@ -14,10 +14,8 @@ export function login(username: string) {
     return api.post("/login", { username });
 }
 
-export function getWordList(count: number = 5) {
-    return api.get("/words", {
-        params: { count },
-    });
+export function getWordList() {
+    return api.get("/words/batch");
 }
 
 export function getGameConfig() {

@@ -4,6 +4,7 @@ APP_NAME = "b3-default"
 MIGRATIONS_DIR = add_prefix("migrations")
 FRONTEND_ROOT = add_prefix("frontend")
 GAME_CONFIG = {
+    "wordCount": 10,
     "incorrectAnswerPenalty": 1,
     "correctAnswerAward": 5,
     "noParticipleAnswers": [
