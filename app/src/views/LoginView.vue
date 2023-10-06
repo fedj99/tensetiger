@@ -21,9 +21,7 @@ async function start() {
     await login(userName.value);
 
     // Go to learning page
-    router.push({
-        name: "learn",
-    });
+    router.push({ name: "learn" });
 }
 
 onMounted(() => {

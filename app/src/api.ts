@@ -1,7 +1,12 @@
 import axios from "axios";
 
+if (!import.meta.env.VITE_API_URL || import.meta.env.VITE_API_URL == "")
+    throw "Please specify VITE_API_URL environment variable";
+
+console.log("API URL set to ", import.meta.env.VITE_API_URL);
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL ?? "http://<error>",
+    baseURL: import.meta.env.VITE_API_URL,
     withCredentials: true,
 });
 

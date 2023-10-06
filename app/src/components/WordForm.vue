@@ -111,6 +111,7 @@ function revealHint() {
                     name="translation"
                     id="translation"
                     :style="hintStyle"
+                    tabindex="-1"
                 />
                 <div class="controls">
                     <button
