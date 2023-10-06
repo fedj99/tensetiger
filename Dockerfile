@@ -55,14 +55,6 @@ COPY ${API_SOURCE} .
 # Copy app build files to static files
 COPY --from=build ${BUILD_OUTPUT_DIR} ${STATIC_DIR}
 
-# Install OpenSSH-Server so we can remote into the container later
-RUN apt-get update && apt-get install -y openssh-server \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/*
-RUN useradd -rm -d /home/sshuser -s /bin/bash -g root -G sudo -u 1000 sshuser
-RUN  echo 'sshuser:sshtest' | chpasswd
-EXPOSE 22
-
 # Run the web server
 EXPOSE ${GUNICORN_SERVER_PORT}
 CMD ["gunicorn"]
