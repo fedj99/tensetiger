@@ -1,15 +1,22 @@
-import { getWordList } from "@/api";
+import { getGameConfig, getWordList } from "@/api";
+import { type GameConfig } from "@/game";
 import { wordFormKeys, type Word, type WordFormKey } from "@/words";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 export const useGameStore = defineStore("game", () => {
+    const _config = ref<GameConfig>();
     const score = ref(0);
     const progress = ref(0);
     const wordCount = ref(0);
     const words = ref<Word[]>([]);
     const currentWord = computed(() => words.value[progress.value]);
     const shownKey = ref<WordFormKey>("form_infinitive");
+
+    const config = computed(() => {
+        if (_config.value == undefined) throw "Game config not loaded";
+        return _config.value;
+    });
 
     function next() {
         progress.value++;
@@ -44,7 +51,14 @@ export const useGameStore = defineStore("game", () => {
         score.value -= points;
     }
 
+    async function fetchGameConfig() {
+        const res = await getGameConfig();
+        _config.value = res.data;
+        return _config.value;
+    }
+
     return {
+        config,
         score,
         progress,
         wordCount,
@@ -56,5 +70,6 @@ export const useGameStore = defineStore("game", () => {
         resume,
         addPoints,
         deductPoints,
+        fetchGameConfig,
     };
 });

@@ -195,3 +195,26 @@ input[type="week"] {
 }
 
 /* TABLES */
+
+table {
+    border-collapse: collapse;
+
+    thead {
+        border-bottom: 3px solid black;
+    }
+
+    td,
+    th {
+        padding: var(--padding-sm) var(--padding-lg);
+        text-align: left;
+
+        &:first-child {
+            padding-left: 0;
+        }
+
+        &:last-child {
+            text-align: right;
+            padding-right: 0;
+        }
+    }
+}

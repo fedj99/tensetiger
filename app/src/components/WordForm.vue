@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { gameConfig, type Result } from "@/game";
+import { type GameConfig, type Result } from "@/game";
 import {
     emptyAnswer,
     wordFormKeys,
@@ -11,6 +11,7 @@ import {
 import { computed, nextTick, ref, watch } from "vue";
 
 const props = defineProps<{
+    gameConfig: GameConfig;
     word?: Word;
     shownKey: WordFormKey;
     progress: number;

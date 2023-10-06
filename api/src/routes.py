@@ -1,8 +1,9 @@
+import json
 import os
 from datetime import datetime
 from glob import glob
 
-from flask import Flask, jsonify, make_response, redirect, request, send_file, send_from_directory
+from flask import Flask, jsonify, redirect, request, send_file, send_from_directory
 
 import db
 
@@ -40,11 +41,30 @@ def setup_routes(app: Flask):
         return db.get_all(db.T_SCORES)
 
     @app.post("/api/scores")
-    def add_score():
-        success = db.create(db.T_SCORES, request.json) > 0
-        response = make_response({"success": success})
-        response.status_code = 201 if success else 400
+    def post_score():
+        score_id = db.create(db.T_SCORES, request.json)
+        response = jsonify({"score_id": score_id})
         return response
+
+    @app.get("/api/scores/topk")
+    def get_top_k_scores():
+        k = int(request.args.get("k", 5))
+        return db.get_top_k(db.T_SCORES, "score", k)
+
+    @app.get("/api/scores/latest")
+    def get_latest_scores():
+        user_id = int(request.args.get("user_id", -1))
+        k = int(request.args.get("k", 5))
+        return db.get_top_k_filtered(db.T_SCORES, "date", "user_id", user_id, k)
+
+    @app.get("/api/scores/highscore")
+    def get_highscore():
+        user_id = int(request.args.get("user_id", -1))
+        return db.get_max(db.T_SCORES, "score", "user_id", user_id)
+
+    @app.get("/api/scores/<int:id>")
+    def get_score(id: int):
+        return db.find_by_id(db.T_SCORES, id)
 
     @app.get("/api/words")
     def get_all_words():
@@ -53,6 +73,10 @@ def setup_routes(app: Flask):
             return db.get_random_subset(db.T_WORDS, count)
         else:
             return db.get_all(db.T_WORDS)
+
+    @app.get("/api/game-config")
+    def game_config():
+        return app.config["GAME_CONFIG"]
 
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")

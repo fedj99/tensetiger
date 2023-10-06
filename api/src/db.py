@@ -122,6 +122,35 @@ def get_random_subset(table: str, subset_size: int):
         return cur.fetchall()
 
 
+def get_top_k(table: str, orderby: str, k: int):
+    query = sql.SQL("SELECT * FROM {table} ORDER BY {orderby} DESC LIMIT %(k)s").format(
+        table=sql.Identifier(table), orderby=sql.Identifier(orderby)
+    )
+    with cursor() as cur:
+        cur.execute(query, {"k": k})
+        return cur.fetchall()
+
+
+def get_top_k_filtered(table: str, orderby: str, filter_col: str, filter_val: str, k: int):
+    query = sql.SQL(
+        "SELECT * FROM {table} WHERE {filter_col} = %(filter_val)s ORDER BY {orderby} DESC LIMIT %(k)s"
+    ).format(
+        table=sql.Identifier(table),
+        filter_col=sql.Identifier(filter_col),
+        orderby=sql.Identifier(orderby),
+    )
+    with cursor() as cur:
+        cur.execute(query, {"filter_val": filter_val, "k": k})
+        return cur.fetchall()
+
+
+def get_max(table: str, orderby: str, filter_col: str, filter_val: str):
+    res = get_top_k_filtered(table, orderby, filter_col, filter_val, 1)
+    if len(res) > 0:
+        return res[0]
+    return None
+
+
 def create(table: str, data: dict):
     db = get()
     key_string = ", ".join(["{}"] * len(data))

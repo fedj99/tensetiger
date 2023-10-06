@@ -6,7 +6,8 @@ CREATE TABLE public.scores (
         INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START 1 CACHE 1 NO CYCLE
     ),
     "date" timestamp NULL DEFAULT now(),
-    "user" varchar NULL,
+    "user_id" int4 NOT NULL,
+    "username" varchar NULL,
     score int4 NULL,
     CONSTRAINT scores_pkey PRIMARY KEY (id)
 );

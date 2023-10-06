@@ -1,11 +1,11 @@
 import type { Answer, Word, WordFormKey } from "./words";
 
-export const gameConfig = {
-    incorrectAnswerPenalty: 1,
-    correctAnswerAward: 5,
-    noParticipleAnswers: ["(no participle)", "(kein participle)", "(nothing)"],
-    hintRevealedPenalty: 3,
-};
+export interface GameConfig {
+    incorrectAnswerPenalty: number;
+    correctAnswerAward: number;
+    noParticipleAnswers: string[];
+    hintRevealedPenalty: number;
+}
 
 export interface Mistake {
     expected: string;
@@ -21,14 +21,22 @@ export interface Result {
     hasMistakes: boolean;
 }
 
-export function isCorrect(expected: string, actual: string) {
+export interface Score {
+    id: number;
+    date: string;
+    user_id: number;
+    username: string;
+    score: number;
+}
+
+export function isCorrect(gc: GameConfig, expected: string, actual: string) {
     const normalize = (str: string) => str.trim().toLowerCase();
     const separate = (str: string) => str.split(",");
 
-    if (gameConfig.noParticipleAnswers.includes(normalize(expected))) {
+    if (gc.noParticipleAnswers.includes(normalize(expected))) {
         // No participle, decide what should be correct
         const actualNormalized = normalize(actual);
-        return gameConfig.noParticipleAnswers.includes(actualNormalized);
+        return gc.noParticipleAnswers.includes(actualNormalized);
     }
 
     const choices = separate(expected).map(normalize);
@@ -46,7 +54,12 @@ export function isCorrect(expected: string, actual: string) {
     }
 }
 
-export function getResult(word: Word, shownKey: WordFormKey, answer: Answer): Result {
+export function getResult(
+    gc: GameConfig,
+    word: Word,
+    shownKey: WordFormKey,
+    answer: Answer
+): Result {
     let points = 0;
     let hasMistakes = false;
     const mistakes: Mistakes = {
@@ -60,12 +73,12 @@ export function getResult(word: Word, shownKey: WordFormKey, answer: Answer): Re
         if (key == shownKey) continue;
         const expected = word[key];
         const actual = answer[key];
-        if (isCorrect(expected, actual)) {
+        if (isCorrect(gc, expected, actual)) {
             // Correct answer
-            points += word.difficulty * gameConfig.correctAnswerAward;
+            points += word.difficulty * gc.correctAnswerAward;
         } else {
             // Wrong answer
-            points -= gameConfig.incorrectAnswerPenalty;
+            points -= gc.incorrectAnswerPenalty;
             mistakes[key] = { expected, actual };
             hasMistakes = true;
         }

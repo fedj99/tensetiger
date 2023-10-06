@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { postScore } from "@/api";
 import Centered from "@/components/Centered.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 // import Logo from "@/components/Logo.vue";
 import ProgressBar from "@/components/ProgressBar.vue";
 import Score from "@/components/Score.vue";
 import WordForm from "@/components/WordForm.vue";
-import { gameConfig, getResult, type Result } from "@/game";
+import { getResult, type Result } from "@/game";
 import { useGameStore } from "@/stores/game";
 import { type Answer, type Word, type WordFormKey } from "@/words";
 import { onMounted, ref, watch } from "vue";
@@ -25,12 +26,15 @@ const loading = ref(true);
 const error = ref(null);
 
 const userName = ref<string>("");
+const userId = ref<number>(-1);
 const currentResult = ref<Result | undefined>(undefined);
 
 watch([() => route.params], () => fetchWordList(), { immediate: true });
 
 onMounted(() => {
-    userName.value = useCookies().cookies.get("username");
+    const { cookies } = useCookies();
+    userName.value = cookies.get("username");
+    userId.value = parseInt(cookies.get("user_id"));
     if (!userName.value) {
         alert("Please enter a username first");
         useRouter().push({ name: "login" });
@@ -40,7 +44,7 @@ onMounted(() => {
 async function newRound() {
     try {
         loading.value = true;
-        await gameStore.reset();
+        await Promise.all([gameStore.reset(), gameStore.fetchGameConfig()]);
         loading.value = false;
     } catch (e: any) {
         error.value = e;
@@ -71,27 +75,12 @@ function fetchWordList() {
 
 function onSubmit(word: Word, shownKey: WordFormKey, answer: Answer) {
     // Compute points
-    const result = getResult(word, shownKey, answer);
+    const result = getResult(gameStore.config, word, shownKey, answer);
     console.log("Result:", result);
     gameStore.addPoints(result.points);
 
     // Set the result so the word widget shows the info
     currentResult.value = result;
-
-    // if (result.hasMistakes) {
-    //     const mistakeToString = (mistake: Mistake) => {
-    //         if (mistake.actual.includes(",")) {
-    //             return `Some of your answers ("${mistake.actual}") are not correct (should be one of "${mistake.expected}")`;
-    //         } else if (mistake.expected.includes(",")) {
-    //             return `Your answered "${mistake.actual}" which is not one of "${mistake.expected}"`;
-    //         }
-    //         return `Your answered "${mistake.actual}" but the correct answer is "${mistake.expected}"`;
-    //     };
-
-    //     const lines = ["You have some mistakes :(", "", ...result.mistakes.map(mistakeToString)];
-    //     const text = lines.join("\n");
-    //     alert(text);
-    // }
 }
 
 function onNext() {
@@ -107,21 +96,28 @@ function onNext() {
 }
 
 function onHintRevealed() {
-    gameStore.deductPoints(gameConfig.hintRevealedPenalty);
+    gameStore.deductPoints(gameStore.config.hintRevealedPenalty);
 }
 
-function endRound() {
+async function endRound() {
     // Post score and get score ID back
+    loading.value = true;
+    const res = await postScore(userId.value, userName.value, gameStore.score);
+    loading.value = false;
     // Then go to leaderboards with score ID, where all results are fetched
-    const scoreId = 0;
-    router.push({ name: "leaderboard", query: { username: userName.value, scoreId } });
+    router.push({
+        name: "leaderboard",
+        query: { user: userName.value, score_id: res.data.score_id.toString() },
+    });
 }
 </script>
 
 <template>
     <Fullscreen>
         <Centered>
-            <main class="main">
+            <main v-if="loading && !error">Loading...</main>
+            <main v-else-if="error">Error: {{ error }}</main>
+            <main v-else class="main">
                 <div class="player">
                     <span>
                         You are playing as: <strong>{{ userName }}</strong>
@@ -145,6 +141,7 @@ function endRound() {
                 <hr />
 
                 <WordForm
+                    :game-config="gameStore.config"
                     :word="gameStore.currentWord"
                     :shown-key="gameStore.shownKey"
                     :progress="gameStore.progress"
