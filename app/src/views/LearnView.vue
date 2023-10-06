@@ -215,9 +215,8 @@ function onHintRevealed() {
             </main>
             <main v-else class="main">
                 <div class="player">
-                    <span>
-                        You are playing as: <strong>{{ userName }}</strong>
-                    </span>
+                    <span> You are playing as: </span>
+                    <strong>{{ userName }}</strong>
                     <RouterLink
                         :to="{ name: 'home' }"
                         class="button"
@@ -251,7 +250,7 @@ function onHintRevealed() {
 
                 <hr />
 
-                <div class="par">
+                <div class="rules par">
                     <strong>Fill in the missing verb forms!</strong>
                     <ul class="rules">
                         <li>If there are multiple correct verb forms, choose one.</li>
@@ -266,6 +265,7 @@ function onHintRevealed() {
 
 <style lang="scss" scoped="">
 @import "@/assets/components.scss";
+@import "@/assets/base.scss";
 
 .main {
     width: min(90vw, 50em);
@@ -290,5 +290,26 @@ function onHintRevealed() {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: var(--gap);
+}
+
+@media screen and (max-width: $bp-mobile) {
+    .player {
+        font-size: var(--font-size-regular);
+        flex-wrap: wrap;
+        margin-top: var(--gap);
+
+        a {
+            flex: 1;
+        }
+    }
+
+    .rules {
+        text-align: left;
+
+        ul {
+            padding-left: 1em;
+        }
+    }
 }
 </style>

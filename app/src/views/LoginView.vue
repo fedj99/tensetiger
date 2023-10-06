@@ -57,6 +57,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @import "@/assets/components.scss";
+@import "@/assets/base.scss";
 
 .main {
     width: min(90vw, 50em);
@@ -68,5 +69,15 @@ onMounted(() => {
     display: flex;
     align-items: stretch;
     gap: var(--gap);
+}
+
+@media screen and (max-width: $bp-mobile) {
+    .form {
+        flex-direction: column;
+
+        input {
+            text-align: center;
+        }
+    }
 }
 </style>

@@ -73,7 +73,7 @@ async function resetGame() {
         <div v-else-if="error" class="error">
             <AxiosErrorWidget :error="error"></AxiosErrorWidget>
         </div>
-        <div v-else>
+        <div v-else class="leaderboard">
             <h1>
                 {{ greeting }}, <span class="username">{{ username }}</span
                 >!
@@ -176,5 +176,19 @@ p {
 
 .reset {
     width: 100%;
+}
+
+@import "@/assets/base.scss";
+
+@media screen and (max-width: $bp-mobile) {
+    .leaderboard {
+        padding: var(--padding-lg);
+    }
+
+    .tables {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
 }
 </style>

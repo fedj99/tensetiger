@@ -6,5 +6,6 @@
 - [x] Configure number of words in list
 - [x] Error pages
 - [x] Test weird usernames (spaces, emojis, etc.)
-- [ ] Mobile optimization
+- [x] Mobile optimization
 - [ ] Performance graph
+- [ ] Dark mode

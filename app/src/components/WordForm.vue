@@ -287,7 +287,7 @@ input[type="text"].active {
     padding: var(--padding-lg);
     border-radius: var(--br);
     border: var(--border-width) solid #0002;
-    max-height: 20em;
+    // max-height: 20em;
     clip-path: circle(200% at top right);
 
     background-color: #fff;
@@ -375,5 +375,28 @@ input[type="text"].active {
 .v-enter-from,
 .v-leave-to {
     clip-path: circle(0 at top right);
+}
+
+// Mobile
+@import "@/assets/base.scss";
+
+@media screen and (max-width: $bp-mobile) {
+    .form {
+        flex-direction: column;
+    }
+
+    .control-group .controls {
+        position: relative;
+        padding: var(--padding) 0;
+
+        button {
+            flex: 1;
+        }
+    }
+
+    .mistakes {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 </style>

@@ -17,7 +17,7 @@ const fillPercent = computed(() => fillRatio.value * 100);
     <div class="container">
         <div class="pb">
             <div class="pb-filler" :style="{ width: `${fillPercent}%` }"></div>
-            <span class="text">Round progress: {{ progress }} / {{ total }}</span>
+            <span class="text">Progress: {{ progress }} / {{ total }}</span>
         </div>
     </div>
 </template>

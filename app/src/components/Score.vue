@@ -13,6 +13,7 @@ const props = defineProps<{
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/base.scss";
 .box {
     color: var(--color-accent-secondary);
     display: flex;
@@ -28,5 +29,16 @@ const props = defineProps<{
     font-size: calc(1.5 * var(--font-size-huge));
     font-weight: bold;
     font-family: var(--font-default-serif);
+}
+
+@media screen and (max-width: $bp-mobile) {
+    .prefix,
+    .suffix {
+        display: none;
+    }
+
+    .score {
+        font-size: var(--font-size-huge);
+    }
 }
 </style>
