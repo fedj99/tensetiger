@@ -116,13 +116,22 @@ async function resetGame() {
             <div class="tables">
                 <div>
                     <h2>Your latest scores</h2>
-                    <ScoreTable v-if="latestScores" :scores="latestScores"></ScoreTable>
+                    <ScoreTable
+                        v-if="latestScores"
+                        :scores="latestScores"
+                        :show-player="false"
+                        :show-rank="false"
+                    ></ScoreTable>
                     <div v-else>No scores yet</div>
                 </div>
 
                 <div>
                     <h2>Top {{ TOP_K }} players</h2>
-                    <ScoreTable v-if="topKScores" :scores="topKScores" show-rank></ScoreTable>
+                    <ScoreTable
+                        v-if="topKScores"
+                        :scores="topKScores"
+                        date-format="short"
+                    ></ScoreTable>
                     <div v-else>No scores yet</div>
                 </div>
             </div>

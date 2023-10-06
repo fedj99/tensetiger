@@ -4,11 +4,17 @@ import type { Score } from "@/game";
 interface Props {
     scores: Score[];
     showRank?: boolean;
+    showPlayer?: boolean;
+    dateFormat?: "short" | "long";
 }
 
-withDefaults(defineProps<Props>(), { showRank: false });
+const props = withDefaults(defineProps<Props>(), {
+    showRank: true,
+    showPlayer: true,
+    dateFormat: "long",
+});
 
-function formatDate(dateString: string) {
+function formatDateLong(dateString: string) {
     const date = new Date(dateString);
     return date.toLocaleString(["de-CH"], {
         month: "short",
@@ -26,6 +32,11 @@ function formatDateShort(dateString: string) {
         day: "numeric",
     });
 }
+
+function formatDate(dateString: string) {
+    if (props.dateFormat == "short") return formatDateShort(dateString);
+    else if (props.dateFormat == "long") return formatDateLong(dateString);
+}
 </script>
 
 <template>
@@ -33,16 +44,18 @@ function formatDateShort(dateString: string) {
         <thead>
             <tr>
                 <th v-if="showRank">#</th>
-                <th>Player</th>
                 <th>Date</th>
+                <th v-if="showPlayer">Player</th>
                 <th>Points</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="(score, idx) of scores" :key="score.id">
                 <td v-if="showRank">{{ idx + 1 }}</td>
-                <td style="color: var(--color-accent-secondary)">{{ score.username }}</td>
-                <td>{{ formatDateShort(score.date) }}</td>
+                <td>{{ formatDate(score.date) }}</td>
+                <td v-if="showPlayer" style="color: var(--color-accent-secondary)">
+                    {{ score.username }}
+                </td>
                 <td style="color: var(--color-accent-primary)">{{ score.score }}</td>
             </tr>
         </tbody>
