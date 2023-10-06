@@ -1,6 +1,7 @@
 import LeaderboardView from "@/views/LeaderboardView.vue";
 import LearnView from "@/views/LearnView.vue";
 import LoginView from "@/views/LoginView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -25,6 +26,11 @@ const router = createRouter({
             path: "/leaderboard",
             name: "leaderboard",
             component: LeaderboardView,
+        },
+        {
+            path: "/:catchAll(.*)",
+            name: "not-found",
+            component: NotFoundView,
         },
     ],
 });

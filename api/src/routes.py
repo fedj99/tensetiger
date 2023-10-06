@@ -1,8 +1,8 @@
 import os
 from datetime import datetime
-from time import time
+from glob import glob
 
-from flask import Flask, jsonify, make_response, request, session
+from flask import Flask, jsonify, make_response, request, send_file, send_from_directory
 
 import db
 
@@ -58,9 +58,21 @@ def setup_routes(app: Flask):
     @app.route("/<path:path>")
     def catch_all(path):
         # Get path in app folder
-        static_path = os.path.join(app.static_folder, path)
+        frontend_path = app.config["FRONTEND_ROOT"]
+        static_path = os.path.join(frontend_path, path)
+
+        def try_path(path):
+            candidates = [path, *glob(os.path.join(path, "index.*"))]
+            for file in candidates:
+                app.logger.debug(f"Trying: `{file}`")
+                if os.path.exists(file) and os.path.isfile(file):
+                    # relpath = os.path.relpath(file, frontend_path)
+                    # return send_from_directory(frontend_path, relpath)
+                    return send_file(file)
+
         # If the path exists and is a file, serve this as a static file
-        if os.path.exists(static_path) and os.path.isfile(static_path):
-            return app.send_static_file(path)
-        # Otherwise, this is a Vue route, let Vue handle it
-        return app.send_static_file("index.html")
+        if res := try_path(static_path):
+            return res
+
+        # Otherwise, this is a Vue route, let Vue try to handle it
+        return send_from_directory(frontend_path, "index.html")

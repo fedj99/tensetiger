@@ -9,7 +9,7 @@ ARG API_WORKDIR=/srv
 
 # Keep these in sync with Vue build dir and Flask static dir
 ARG BUILD_OUTPUT_DIR=${APP_WORKDIR}/dist
-ARG STATIC_DIR=${API_WORKDIR}/static
+ARG STATIC_DIR=${API_WORKDIR}/frontend
 
 
 ### STAGE 1: BUILD
@@ -36,6 +36,7 @@ FROM python:3.10 AS deploy
 ENV PYTHONPATH=src
 ENV FLASK_CONFIG=docker_local
 ENV FLASK_DB_PASSWORD=root
+ENV GUNICORN_SERVER_PORT=8000
 
 # Inherit variables from global scope
 ARG API_SOURCE
@@ -54,5 +55,14 @@ COPY ${API_SOURCE} .
 # Copy app build files to static files
 COPY --from=build ${BUILD_OUTPUT_DIR} ${STATIC_DIR}
 
-CMD ["gunicorn", "run:app"]
-EXPOSE 8000
+# Install OpenSSH-Server so we can remote into the container later
+RUN apt-get update && apt-get install -y openssh-server \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*
+RUN useradd -rm -d /home/sshuser -s /bin/bash -g root -G sudo -u 1000 sshuser
+RUN  echo 'sshuser:sshtest' | chpasswd
+EXPOSE 22
+
+# Run the web server
+EXPOSE ${GUNICORN_SERVER_PORT}
+CMD ["gunicorn"]

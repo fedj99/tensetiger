@@ -1,9 +1,16 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Centered from "./Centered.vue";
+
+interface Props {
+    center?: boolean;
+}
+const props = withDefaults(defineProps<Props>(), { center: false });
+</script>
 
 <template>
-    <div class="container">
+    <component :is="center ? Centered : 'div'" class="container">
         <slot></slot>
-    </div>
+    </component>
 </template>
 
 <style lang="scss" scoped>

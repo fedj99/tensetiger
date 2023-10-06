@@ -1,16 +1,18 @@
-import "@/assets/base.scss"
-import "@/assets/components.scss"
-import "@/assets/main.scss"
+import "remixicon/fonts/remixicon.css";
 
-import { createPinia } from 'pinia'
-import { createApp } from 'vue'
+import "@/assets/base.scss";
+import "@/assets/components.scss";
+import "@/assets/main.scss";
 
-import App from './App.vue'
-import router from './router'
+import { createPinia } from "pinia";
+import { createApp } from "vue";
 
-const app = createApp(App)
+import App from "./App.vue";
+import router from "./router";
 
-app.use(createPinia())
-app.use(router)
+const app = createApp(App);
 
-app.mount('#app')
+app.use(createPinia());
+app.use(router);
+
+app.mount("#app");
