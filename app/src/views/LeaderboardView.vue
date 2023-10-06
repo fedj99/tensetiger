@@ -3,13 +3,16 @@ import { getHighscore, getLatestScores, getScore, getTopKScores } from "@/api";
 import Fullscreen from "@/components/Fullscreen.vue";
 import ScoreTable from "@/components/ScoreTable.vue";
 import type { Score } from "@/game";
+import { useGameStore } from "@/stores/game";
 import { computed, onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const LATEST_K = 10;
 const TOP_K = 10;
 
 const route = useRoute();
+const router = useRouter();
+const gameStore = useGameStore();
 
 const loading = ref(true);
 const error = ref();
@@ -55,6 +58,11 @@ onMounted(async () => {
         error.value = e;
     }
 });
+
+async function resetGame() {
+    await gameStore.reset();
+    router.push({ name: "login" });
+}
 </script>
 
 <template>
@@ -118,9 +126,7 @@ onMounted(async () => {
             <hr />
 
             <div>
-                <RouterLink style="display: block" :to="{ name: 'home' }" class="button input-huge"
-                    >Play Again!</RouterLink
-                >
+                <button @click="resetGame()" class="reset input-huge">Play Again!</button>
             </div>
         </div>
     </Fullscreen>
@@ -162,5 +168,9 @@ p {
     display: flex;
     flex-wrap: wrap;
     gap: 2em;
+}
+
+.reset {
+    width: 100%;
 }
 </style>

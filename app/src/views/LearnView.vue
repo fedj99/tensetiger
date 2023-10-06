@@ -7,16 +7,18 @@ import ProgressBar from "@/components/ProgressBar.vue";
 import Score from "@/components/Score.vue";
 import WordForm from "@/components/WordForm.vue";
 import { getResult, type Result } from "@/game";
-import { useGameStore } from "@/stores/game";
+import {
+    LS_SCORE_KEY,
+    LS_SHOWN_KEY,
+    LS_WORD_COUNT_KEY,
+    LS_WORD_PROGRESS_KEY,
+    LS_WORDS_KEY,
+    useGameStore,
+} from "@/stores/game";
 import { type Answer, type Word, type WordFormKey } from "@/words";
 import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
-
-const LS_WORDS_KEY = "words";
-const LS_WORD_COUNT_KEY = "word-count";
-const LS_WORD_PROGRESS_KEY = "word-progress";
-const LS_POINTS_KEY = "points";
 
 const route = useRoute();
 const router = useRouter();
@@ -29,8 +31,23 @@ const userName = ref<string>("");
 const userId = ref<number>(-1);
 const currentResult = ref<Result | undefined>(undefined);
 
-watch([() => route.params], () => fetchWordList(), { immediate: true });
+// Watch when route changes, then get a new (or cached word list)
+watch([() => route.params], () => loadOrFetchWordList(), { immediate: true });
 
+// Watch parameters and persist to resume later
+watch(
+    [
+        () => gameStore.words,
+        () => gameStore.wordCount,
+        () => gameStore.progress,
+        () => gameStore.score,
+        () => gameStore.shownKey,
+    ],
+    ([words, wordCount, progress, score, shownKey]) =>
+        saveProgress(words, wordCount, progress, score, shownKey)
+);
+
+// Get current logged in user
 onMounted(() => {
     const { cookies } = useCookies();
     userName.value = cookies.get("username");
@@ -41,42 +58,111 @@ onMounted(() => {
     }
 });
 
+// Game methods
 async function newRound() {
     try {
+        // Get new list of words from API
+        console.log("Fetching a fresh round");
         loading.value = true;
         await Promise.all([gameStore.reset(), gameStore.fetchGameConfig()]);
-        loading.value = false;
+
+        // Progress is automatically saved
     } catch (e: any) {
         error.value = e;
+    } finally {
+        loading.value = false;
     }
 }
 
-function fetchWordList() {
+async function resumeFromCache(
+    words: string,
+    wordCount: string,
+    progress: string,
+    score: string,
+    shownKey: string
+) {
+    try {
+        console.log("Resuming game from cache, fetching game config");
+        loading.value = true;
+        const _wordCount = parseInt(wordCount);
+        const _progress = parseInt(progress);
+        const _words = JSON.parse(words);
+        const _score = parseInt(score);
+        const _shownKey = shownKey as WordFormKey;
+
+        // Load game config
+        await gameStore.fetchGameConfig();
+
+        if (_progress < _wordCount) {
+            // Resume game
+            gameStore.resume(_words, _wordCount, _progress, _score, _shownKey);
+        } else {
+            // Game was already over (?)
+            endRound();
+        }
+    } catch (e: any) {
+        error.value = e;
+    } finally {
+        loading.value = false;
+    }
+}
+
+function loadOrFetchWordList() {
+    // Check local storage first
     const cachedWords = localStorage.getItem(LS_WORDS_KEY);
     const cachedWordCount = localStorage.getItem(LS_WORD_COUNT_KEY);
     const cachedProgress = localStorage.getItem(LS_WORD_PROGRESS_KEY);
-    const cachedPoints = localStorage.getItem(LS_POINTS_KEY);
+    const cachedPoints = localStorage.getItem(LS_SCORE_KEY);
+    const cachedShownKey = localStorage.getItem(LS_SHOWN_KEY);
 
-    if (cachedWords && cachedWordCount && cachedProgress && cachedPoints) {
-        const wordCount = parseInt(cachedWordCount);
-        const progress = parseInt(cachedProgress);
-        const words = JSON.parse(cachedWords);
-        const points = parseInt(cachedPoints);
-
-        if (progress < wordCount - 1) {
-            // Resume game
-            gameStore.resume(words, wordCount, progress, points);
-        }
+    // Load from local storage
+    if (cachedWords && cachedWordCount && cachedProgress && cachedPoints && cachedShownKey) {
+        resumeFromCache(cachedWords, cachedWordCount, cachedProgress, cachedPoints, cachedShownKey);
+    } else {
+        // Not cached, start a new round
+        newRound();
     }
 
-    // Start a new round
-    newRound();
+    console.log("Round started");
 }
 
+function saveProgress(
+    words: Word[],
+    wordCount: number,
+    progress: number,
+    score: number,
+    shownKey: WordFormKey
+) {
+    console.log("Saving progress");
+    localStorage.setItem(LS_WORDS_KEY, JSON.stringify(words));
+    localStorage.setItem(LS_WORD_COUNT_KEY, wordCount.toString());
+    localStorage.setItem(LS_WORD_PROGRESS_KEY, progress.toString());
+    localStorage.setItem(LS_SCORE_KEY, score.toString());
+    localStorage.setItem(LS_SHOWN_KEY, shownKey);
+}
+
+async function endRound() {
+    try {
+        console.log("Ending round. Points achieved:", gameStore.score);
+        // Post score and get score ID back
+        loading.value = true;
+        const res = await postScore(userId.value, userName.value, gameStore.score);
+        // Then go to leaderboards with score ID, where all results are fetched
+        router.push({
+            name: "leaderboard",
+            query: { user: userName.value, score_id: res.data.score_id.toString() },
+        });
+    } catch (e: any) {
+        error.value = e;
+    } finally {
+        loading.value = false;
+    }
+}
+
+// Button handlers
 function onSubmit(word: Word, shownKey: WordFormKey, answer: Answer) {
     // Compute points
     const result = getResult(gameStore.config, word, shownKey, answer);
-    console.log("Result:", result);
     gameStore.addPoints(result.points);
 
     // Set the result so the word widget shows the info
@@ -97,18 +183,6 @@ function onNext() {
 
 function onHintRevealed() {
     gameStore.deductPoints(gameStore.config.hintRevealedPenalty);
-}
-
-async function endRound() {
-    // Post score and get score ID back
-    loading.value = true;
-    const res = await postScore(userId.value, userName.value, gameStore.score);
-    loading.value = false;
-    // Then go to leaderboards with score ID, where all results are fetched
-    router.push({
-        name: "leaderboard",
-        query: { user: userName.value, score_id: res.data.score_id.toString() },
-    });
 }
 </script>
 
