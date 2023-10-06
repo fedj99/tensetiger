@@ -39,7 +39,7 @@ const fillPercent = computed(() => fillRatio.value * 100);
     justify-content: center;
     align-items: center;
 
-    box-shadow: 0 0 1em rgba(var(--color-accent-secondary-rgb), 0.3);
+    box-shadow: 0 0 1.5rem rgba(var(--color-accent-secondary-rgb), 0.2);
     .text {
         font-weight: bold;
         color: var(--color-accent-secondary);
