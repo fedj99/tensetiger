@@ -1,18 +1,23 @@
 import type { Answer, Word, WordFormKey } from "./words";
 
-const gameConfig = {
+export const gameConfig = {
     incorrectAnswerPenalty: 1,
     correctAnswerAward: 5,
     noParticipleAnswers: ["(no participle)", "(kein participle)", "(nothing)"],
+    hintRevealedPenalty: 3,
 };
 
 export interface Mistake {
     expected: string;
     actual: string;
 }
+export type Mistakes = {
+    [key in WordFormKey]: Mistake | undefined;
+};
 export interface Result {
     points: number;
-    mistakes: Mistake[];
+    word: Word;
+    mistakes: Mistakes;
     hasMistakes: boolean;
 }
 
@@ -43,7 +48,12 @@ export function isCorrect(expected: string, actual: string) {
 
 export function getResult(word: Word, shownKey: WordFormKey, answer: Answer): Result {
     let points = 0;
-    const mistakes: Mistake[] = [];
+    let hasMistakes = false;
+    const mistakes: Mistakes = {
+        form_infinitive: undefined,
+        form_simple_past: undefined,
+        form_past_participle: undefined,
+    };
 
     for (const key_ in answer) {
         const key = key_ as WordFormKey;
@@ -56,9 +66,10 @@ export function getResult(word: Word, shownKey: WordFormKey, answer: Answer): Re
         } else {
             // Wrong answer
             points -= gameConfig.incorrectAnswerPenalty;
-            mistakes.push({ expected, actual });
+            mistakes[key] = { expected, actual };
+            hasMistakes = true;
         }
     }
 
-    return { points, mistakes, hasMistakes: mistakes.length > 0 };
+    return { points, word, mistakes, hasMistakes };
 }

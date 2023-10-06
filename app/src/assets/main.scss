@@ -113,6 +113,19 @@ h6 {
 
 /* FORMS */
 
+@mixin button-style($color-rgb, $color-contrast, $bg-alpha: 1) {
+    background-color: rgba($color-rgb, $bg-alpha);
+    outline: 0 solid rgba($color-rgb, 0.3);
+    color: $color-contrast;
+    box-shadow: 0 0 0.7em rgba($color-rgb, 0.5);
+}
+
+@mixin button-style-outlined($color-rgb, $color-contrast, $bg-alpha: 1, $outline-color: #0005) {
+    @include button-style($color-rgb, $color-contrast, $bg-alpha);
+    border: var(--border-width) solid $outline-color;
+    box-shadow: none;
+}
+
 input[type="submit"],
 input[type="reset"],
 button,
@@ -120,17 +133,15 @@ button,
     font-size: var(--font-size-regular);
     padding: var(--padding);
     border: none;
-    outline: 0 solid rgba(var(--color-accent-primary-rgb), 0.3);
-    background-color: var(--color-accent-primary);
-    color: var(--color-contrast-primary);
     border-radius: var(--br-sm);
     font-weight: bold;
-    box-shadow: 0 0 0.7em rgba(var(--color-accent-primary-rgb), 0.5);
     transition:
         filter 200ms,
         background-color 200ms,
         outline-width 100ms,
         box-shadow 200ms;
+
+    @include button-style(var(--color-accent-primary-rgb), var(--color-contrast-primary));
 
     &:focus {
         outline-width: var(--outline-width);

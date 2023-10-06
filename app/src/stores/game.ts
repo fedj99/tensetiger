@@ -40,6 +40,10 @@ export const useGameStore = defineStore("game", () => {
         score.value += points;
     }
 
+    function deductPoints(points: number) {
+        score.value -= points;
+    }
+
     return {
         score,
         progress,
@@ -51,5 +55,6 @@ export const useGameStore = defineStore("game", () => {
         reset,
         resume,
         addPoints,
+        deductPoints,
     };
 });

@@ -5,7 +5,7 @@ import Fullscreen from "@/components/Fullscreen.vue";
 import ProgressBar from "@/components/ProgressBar.vue";
 import Score from "@/components/Score.vue";
 import WordForm from "@/components/WordForm.vue";
-import { getResult, type Mistake } from "@/game";
+import { gameConfig, getResult, type Result } from "@/game";
 import { useGameStore } from "@/stores/game";
 import { type Answer, type Word, type WordFormKey } from "@/words";
 import { onMounted, ref, watch } from "vue";
@@ -25,6 +25,7 @@ const loading = ref(true);
 const error = ref(null);
 
 const userName = ref<string>("");
+const currentResult = ref<Result | undefined>(undefined);
 
 watch([() => route.params], () => fetchWordList(), { immediate: true });
 
@@ -74,20 +75,28 @@ function onSubmit(word: Word, shownKey: WordFormKey, answer: Answer) {
     console.log("Result:", result);
     gameStore.addPoints(result.points);
 
-    if (result.hasMistakes) {
-        const mistakeToString = (mistake: Mistake) => {
-            if (mistake.actual.includes(",")) {
-                return `Some of your answers ("${mistake.actual}") are not correct (should be one of "${mistake.expected}")`;
-            } else if (mistake.expected.includes(",")) {
-                return `Your answered "${mistake.actual}" which is not one of "${mistake.expected}"`;
-            }
-            return `Your answered "${mistake.actual}" but the correct answer is "${mistake.expected}"`;
-        };
+    // Set the result so the word widget shows the info
+    currentResult.value = result;
 
-        const lines = ["You have some mistakes :(", "", ...result.mistakes.map(mistakeToString)];
-        const text = lines.join("\n");
-        alert(text);
-    }
+    // if (result.hasMistakes) {
+    //     const mistakeToString = (mistake: Mistake) => {
+    //         if (mistake.actual.includes(",")) {
+    //             return `Some of your answers ("${mistake.actual}") are not correct (should be one of "${mistake.expected}")`;
+    //         } else if (mistake.expected.includes(",")) {
+    //             return `Your answered "${mistake.actual}" which is not one of "${mistake.expected}"`;
+    //         }
+    //         return `Your answered "${mistake.actual}" but the correct answer is "${mistake.expected}"`;
+    //     };
+
+    //     const lines = ["You have some mistakes :(", "", ...result.mistakes.map(mistakeToString)];
+    //     const text = lines.join("\n");
+    //     alert(text);
+    // }
+}
+
+function onNext() {
+    // Hide result
+    currentResult.value = undefined;
 
     if (gameStore.progress >= gameStore.wordCount - 1) {
         endRound();
@@ -95,6 +104,10 @@ function onSubmit(word: Word, shownKey: WordFormKey, answer: Answer) {
 
     // Get next word
     gameStore.next();
+}
+
+function onHintRevealed() {
+    gameStore.deductPoints(gameConfig.hintRevealedPenalty);
 }
 
 function endRound() {
@@ -136,7 +149,10 @@ function endRound() {
                     :shown-key="gameStore.shownKey"
                     :progress="gameStore.progress"
                     :word-count="gameStore.wordCount"
+                    :result="currentResult"
                     @submit="onSubmit"
+                    @reveal-hint="onHintRevealed"
+                    @next="onNext"
                 ></WordForm>
 
                 <hr />

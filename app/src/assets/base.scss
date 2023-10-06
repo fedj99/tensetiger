@@ -1,7 +1,13 @@
 :root {
+    --color-dodger-blue: #0892fbff;
+    --color-tangelo: #fb4d08ff;
+    --color-onyx: #36393bff;
+    --color-vanilla: #f7f2d8;
+    --color-jade: #57a773ff;
+
     // Define variables here
-    --color-text: #1b0e0cd8;
-    --color-text-rgb: 14, 14, 15;
+    --color-text: #36393bff;
+    --color-text-rgb: 54, 57, 59;
     --color-background: #f7f2d8;
     --color-accent-primary: #0892fb;
     --color-accent-primary-rgb: 8, 146, 251;
@@ -11,6 +17,12 @@
     --color-accent-secondary: #fb4d08;
     --color-accent-secondary-rgb: 251, 77, 8;
     --color-contrast-secondary: #fff;
+    --color-success: #57a773;
+    --color-success-rgb: 87, 167, 115;
+    --color-success-contrast: #fff;
+    --color-danger: #fb4d08;
+    --color-danger-rgb: 251, 77, 8;
+    --color-danger-contrast: #fff;
 
     --font-default-serif: "Playfair Display", serif;
     --font-default-sans: "Inter", sans-serif;
