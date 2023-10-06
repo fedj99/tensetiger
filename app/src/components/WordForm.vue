@@ -137,14 +137,15 @@ function focusFirst() {
             <div
                 v-if="result"
                 class="result-overlay"
-                :class="result?.hasMistakes ? 'wrong' : 'correct'"
+                :class="result.hasMistakes ? 'wrong' : 'correct'"
             >
-                <template v-if="!result">
-                    <h1>Oops...</h1>
-                    <p>Something went wrong, as there isn't currently a result.</p>
-                </template>
-                <template v-else-if="result.hasMistakes">
-                    <h1 class="heading">Incorrect <i class="ri-ghost-line"></i></h1>
+                <template v-if="result.hasMistakes">
+                    <div class="toprow">
+                        <h1 class="heading">Incorrect <i class="ri-ghost-line"></i></h1>
+                        <strong>{{ result.word.translation }}</strong> &mdash;
+                        {{ result.word.form_infinitive }} / {{ result.word.form_past_participle }} /
+                        {{ result.word.form_simple_past }}
+                    </div>
                     <div class="mistakes">
                         <span>You said:</span>
                         <span>Correct:</span>
@@ -184,6 +185,11 @@ function focusFirst() {
                 </template>
                 <template v-else>
                     <h1 class="heading">Correct! <i class="ri-sparkling-fill"></i></h1>
+                    <p>
+                        <strong>{{ result.word.translation }}</strong> &mdash;
+                        {{ result.word.form_infinitive }} / {{ result.word.form_past_participle }} /
+                        {{ result.word.form_simple_past }}
+                    </p>
                     <p>All your answers were correct. Good job!</p>
                 </template>
                 <span class="spacer"></span>

@@ -7,3 +7,4 @@
 - [x] Error pages
 - [ ] Test weird usernames (spaces, emojis, etc.)
 - [ ] Mobile optimization
+- [ ] Performance graph
