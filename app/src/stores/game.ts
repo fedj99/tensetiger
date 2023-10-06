@@ -1,5 +1,5 @@
 import { getGameConfig, getWordList } from "@/api";
-import { type GameConfig } from "@/game";
+import { defaultGameConfig, type GameConfig } from "@/game";
 import { wordFormKeys, type Word, type WordFormKey } from "@/words";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -20,8 +20,7 @@ export const useGameStore = defineStore("game", () => {
     const shownKey = ref<WordFormKey>("form_infinitive");
 
     const config = computed(() => {
-        if (_config.value == undefined) throw "Game config not loaded";
-        return _config.value;
+        return _config.value || defaultGameConfig;
     });
 
     function next(shownKey_: WordFormKey | undefined = undefined) {
@@ -30,7 +29,7 @@ export const useGameStore = defineStore("game", () => {
         else shownKey.value = wordFormKeys[Math.floor(Math.random() * wordFormKeys.length)];
     }
 
-    async function reset() {
+    async function clearCache() {
         console.log("Clearing cached game...");
         // Clear the cache
         for (const key of [
@@ -42,6 +41,10 @@ export const useGameStore = defineStore("game", () => {
         ]) {
             localStorage.removeItem(key);
         }
+    }
+
+    async function reset() {
+        clearCache();
 
         const res = await getWordList();
         words.value = res.data;
@@ -93,6 +96,7 @@ export const useGameStore = defineStore("game", () => {
         shownKey,
         next,
         reset,
+        clearCache,
         resume,
         addPoints,
         deductPoints,

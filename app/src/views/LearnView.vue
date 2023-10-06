@@ -83,7 +83,14 @@ async function resumeFromCache(
     shownKey: string
 ) {
     try {
-        console.log("Resuming game from cache, fetching game config");
+        console.log(
+            "Resuming game from cache, fetching game config",
+            words,
+            wordCount,
+            progress,
+            score,
+            shownKey
+        );
         loading.value = true;
         const _wordCount = parseInt(wordCount);
         const _progress = parseInt(progress);
@@ -94,10 +101,10 @@ async function resumeFromCache(
         // Load game config
         await gameStore.fetchGameConfig();
 
-        if (_progress < _wordCount) {
-            // Resume game
-            gameStore.resume(_words, _wordCount, _progress, _score, _shownKey);
-        } else {
+        // Resume game (needs to be done in any case to set state variables)
+        gameStore.resume(_words, _wordCount, _progress, _score, _shownKey);
+        // If already done, finish this round (and post the score)
+        if (_progress >= _wordCount) {
             // Game was already over (?)
             endRound();
         }
@@ -153,6 +160,8 @@ async function endRound() {
         // Post score and get score ID back
         loading.value = true;
         const res = await postScore(userId.value, userName.value, gameStore.score);
+        // When the score has been posted, it's safe to delete
+        gameStore.clearCache();
         // Then go to leaderboards with score ID, where all results are fetched
         router.push({
             name: "leaderboard",

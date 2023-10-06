@@ -1,11 +1,20 @@
 import type { Answer, Word, WordFormKey } from "./words";
 
 export interface GameConfig {
+    wordCount: number;
     incorrectAnswerPenalty: number;
     correctAnswerAward: number;
     noParticipleAnswers: string[];
     hintRevealedPenalty: number;
 }
+
+export const defaultGameConfig: GameConfig = {
+    wordCount: -1,
+    incorrectAnswerPenalty: 0,
+    correctAnswerAward: 0,
+    noParticipleAnswers: [],
+    hintRevealedPenalty: 0,
+};
 
 export interface Mistake {
     expected: string;
