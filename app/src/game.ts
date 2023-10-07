@@ -1,11 +1,17 @@
 import type { Answer, Word, WordFormKey } from "./words";
 
+export interface StreakCheckpoint {
+    streak: number;
+    points: number;
+}
+
 export interface GameConfig {
     wordCount: number;
     incorrectAnswerPenalty: number;
     correctAnswerAward: number;
     noParticipleAnswers: string[];
     hintRevealedPenalty: number;
+    streakCheckpoints: StreakCheckpoint[];
 }
 
 export const defaultGameConfig: GameConfig = {
@@ -14,6 +20,7 @@ export const defaultGameConfig: GameConfig = {
     correctAnswerAward: 0,
     noParticipleAnswers: [],
     hintRevealedPenalty: 0,
+    streakCheckpoints: [],
 };
 
 export interface Mistake {

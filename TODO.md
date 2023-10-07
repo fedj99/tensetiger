@@ -16,3 +16,4 @@
 - [ ] Clean up game state management
 - [ ] Streaks
 - [x] Fix mobile leaderboards with long username
+- [x] Import word list

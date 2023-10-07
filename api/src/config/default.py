@@ -15,4 +15,10 @@ GAME_CONFIG = {
         "(nothing)",
     ],
     "hintRevealedPenalty": 3,
+    "streakCheckpoints": [
+        {"streak": 4, "points": 5},
+        {"streak": 6, "points": 10},
+        {"streak": 8, "points": 15},
+        {"streak": 10, "points": 30},
+    ],
 }

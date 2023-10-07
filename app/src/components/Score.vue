@@ -1,13 +1,13 @@
 <script setup lang="ts">
-const props = defineProps<{
-    score: number;
-}>();
+import { useGameStore } from "@/stores/game";
+
+const gameStore = useGameStore();
 </script>
 
 <template>
     <div class="box">
         <span class="prefix">Your score:</span>
-        <span class="score">{{ score }}</span>
+        <span class="score">{{ gameStore.score + gameStore.currentStreakBonus }}</span>
         <span class="suffix">pts.</span>
     </div>
 </template>

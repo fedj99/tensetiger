@@ -7,6 +7,7 @@ import LoadingSpinner from "@/components/LoadingSpinner.vue";
 // import Logo from "@/components/Logo.vue";
 import ProgressBar from "@/components/ProgressBar.vue";
 import Score from "@/components/Score.vue";
+import StreakWidget from "@/components/StreakWidget.vue";
 import WordForm from "@/components/WordForm.vue";
 import { getResult, type Result } from "@/game";
 import {
@@ -179,7 +180,7 @@ function onSubmit(word: Word, shownKey: WordFormKey, answer: Answer) {
     console.log("Submit", shownKey, answer);
     // Compute points
     const result = getResult(gameStore.config, word, shownKey, answer);
-    gameStore.addPoints(result.points);
+    gameStore.addPoints(result);
 
     // Set the result so the word widget shows the info
     currentResult.value = result;
@@ -227,7 +228,8 @@ function onHintRevealed() {
                     </RouterLink>
                 </div>
 
-                <Score :score="gameStore.score"></Score>
+                <Score></Score>
+                <StreakWidget></StreakWidget>
                 <!-- <Logo></Logo> -->
 
                 <ProgressBar

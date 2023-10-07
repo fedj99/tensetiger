@@ -1,5 +1,5 @@
 import { getGameConfig, getWordList } from "@/api";
-import { defaultGameConfig, type GameConfig } from "@/game";
+import { defaultGameConfig, type GameConfig, type Result } from "@/game";
 import { wordFormKeys, type Word, type WordFormKey } from "@/words";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -18,7 +18,15 @@ export const useGameStore = defineStore("game", () => {
     const words = ref<Word[]>([]);
     const currentWord = computed(() => words.value[Math.min(progress.value, wordCount.value - 1)]); // Never go over boundaries
     const shownKey = ref<WordFormKey>("form_infinitive");
-
+    const streak = ref<number>(0);
+    const currentStreakBonus = computed(() =>
+        Math.max(
+            0, // In case there is no streak, return 0 (all checkpoints will be higher)
+            ...config.value.streakCheckpoints
+                .filter((x) => streak.value >= x.streak)
+                .map((x) => x.points)
+        )
+    );
     const config = computed(() => {
         return _config.value || defaultGameConfig;
     });
@@ -51,6 +59,7 @@ export const useGameStore = defineStore("game", () => {
         wordCount.value = words.value.length;
         progress.value = -1;
         score.value = 0;
+        streak.value = 0;
         // Set random shown value
         next();
     }
@@ -72,8 +81,23 @@ export const useGameStore = defineStore("game", () => {
         next(shownKey_);
     }
 
-    function addPoints(points: number) {
-        score.value += points;
+    function addPoints(result: Result) {
+        score.value += result.points;
+        // Increase streak by default
+        streak.value++;
+        // Check if streak has ended. A streak ends either when the user makes a mistake or the last
+        // round is played (i.e. there are no more rounds)
+        if (result.hasMistakes || progress.value >= wordCount.value - 1) {
+            // Streak bonus is only applied at end of streak, calculate bonus based on streak
+            console.log("Awarding streak bonus:", currentStreakBonus.value);
+            score.value += currentStreakBonus.value;
+
+            // Reset streak if necessary
+            if (result.hasMistakes) {
+                console.log("Resetting streak");
+                streak.value = 0;
+            }
+        }
     }
 
     function deductPoints(points: number) {
@@ -94,6 +118,8 @@ export const useGameStore = defineStore("game", () => {
         words,
         currentWord,
         shownKey,
+        streak,
+        currentStreakBonus,
         next,
         reset,
         clearCache,
