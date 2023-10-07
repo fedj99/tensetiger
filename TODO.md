@@ -9,8 +9,10 @@
 - [x] Mobile optimization
 - [ ] Performance graph
 - [ ] Dark mode
-- [ ] Correct order of solutions
-- [ ] Remove duplicated solutions from mistake screen
+- [x] Correct order of solutions
+- [x] Remove duplicated solutions from mistake screen
 - [ ] Password authentication
-- [ ] Display badge on 2x and 3x points words
+- [x] Display badge on 2x and 3x points words
+- [ ] Clean up game state management
 - [ ] Streaks
+- [x] Fix mobile leaderboards with long username

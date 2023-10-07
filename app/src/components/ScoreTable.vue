@@ -40,35 +40,47 @@ function formatDate(dateString: string) {
 </script>
 
 <template>
-    <table>
-        <thead>
-            <tr>
-                <th v-if="showRank">#</th>
-                <th>Date</th>
-                <th v-if="showPlayer">Player</th>
-                <th>Points</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(score, idx) of scores" :key="score.id">
-                <td v-if="showRank">{{ idx + 1 }}</td>
-                <td>{{ formatDate(score.date) }}</td>
-                <td v-if="showPlayer" style="color: var(--color-accent-secondary)">
-                    {{ score.username }}
-                </td>
-                <td style="color: var(--color-accent-primary)">{{ score.score }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th v-if="showRank">#</th>
+                    <th>Date</th>
+                    <th v-if="showPlayer">Player</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(score, idx) of scores" :key="score.id">
+                    <td v-if="showRank">{{ idx + 1 }}</td>
+                    <td>{{ formatDate(score.date) }}</td>
+                    <td v-if="showPlayer" style="color: var(--color-accent-secondary)">
+                        {{ score.username }}
+                    </td>
+                    <td style="color: var(--color-accent-primary)">{{ score.score }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <style lang="scss" scoped>
 @import "@/assets/base.scss";
 
 @media screen and (max-width: $bp-mobile) {
-    table,
-    tr {
-        width: 100%;
+    .table-container {
+        // overflow-x: auto;
+        max-width: 80vw;
+        overflow-x: auto;
+
+        table {
+            width: 100%;
+
+            th,
+            td {
+                word-wrap: break-word;
+            }
+        }
     }
 }
 </style>

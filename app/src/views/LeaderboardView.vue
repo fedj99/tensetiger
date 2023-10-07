@@ -167,6 +167,8 @@ h1 {
     margin: var(--padding) 0;
     line-height: 1;
     font-size: var(--font-size-huge);
+    word-wrap: break-word;
+    max-width: 80vw;
 }
 
 h2 {

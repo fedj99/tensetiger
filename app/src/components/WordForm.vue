@@ -201,11 +201,49 @@ function focusFirst() {
                 </button>
             </div>
         </Transition>
+
+        <div class="bonus-points">
+            <Transition
+                class="animate__animated animate__fast"
+                enter-active-class="animate__bounceIn"
+                leave-active-class="animate__bounceOut"
+            >
+                <div v-if="!result && word?.difficulty != 1" class="bonus-points-badge">
+                    <strong>{{ word?.difficulty }}&times;</strong> points!
+                </div>
+            </Transition>
+        </div>
     </form>
 </template>
 
 <style lang="scss" scoped="">
 @import "@/assets/main.scss";
+@import "@/assets/base.scss";
+
+.bonus-points {
+    position: absolute;
+    top: -8pt;
+    left: -8pt;
+    right: -8pt;
+    display: flex;
+    justify-content: flex-end;
+
+    @media screen and (max-width: $bp-mobile) {
+        justify-content: center;
+        top: -12pt;
+    }
+
+    .bonus-points-badge {
+        background-color: var(--color-success);
+        color: var(--color-success-contrast);
+        padding: var(--padding-sm) var(--padding);
+        border-radius: var(--br-sm);
+        box-shadow: 0 0 10px var(--color-shadow-strong);
+        font-size: var(--font-size-small);
+        text-transform: uppercase;
+        pointer-events: none;
+    }
+}
 
 .form {
     position: relative;
@@ -216,12 +254,12 @@ function focusFirst() {
     border-radius: var(--br);
     padding: var(--padding);
     margin: var(--padding) 0;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
+    box-shadow: 0 0 30px var(--color-shadow);
 }
 
 .verb-form {
     flex: 1;
+    position: relative;
 
     label,
     input {
@@ -239,6 +277,22 @@ function focusFirst() {
     &.translation {
         flex-basis: 100%;
         margin-top: 1em;
+    }
+
+    @media screen and (max-width: $bp-mobile) {
+        label {
+            position: absolute;
+            top: -9pt;
+            line-height: 1;
+            border: 2px solid #0003;
+            left: 8pt;
+            border-radius: var(--br-sm);
+            padding: 1pt 5pt;
+            background-color: var(--color-background);
+            width: max-content;
+            font-size: var(--font-size-small);
+            opacity: 1;
+        }
     }
 }
 

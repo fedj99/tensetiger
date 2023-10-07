@@ -1,3 +1,4 @@
+import "animate.css";
 import "remixicon/fonts/remixicon.css";
 
 import "@/assets/base.scss";
