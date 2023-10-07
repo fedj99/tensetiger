@@ -142,9 +142,7 @@ function focusFirst() {
                 <template v-if="result.hasMistakes">
                     <div class="toprow">
                         <h1 class="heading">Incorrect <i class="ri-ghost-line"></i></h1>
-                        <strong>{{ result.word.translation }}</strong> &mdash;
-                        {{ result.word.form_infinitive }} / {{ result.word.form_past_participle }} /
-                        {{ result.word.form_simple_past }}
+                        <strong>{{ result.word.translation }}</strong>
                     </div>
                     <div class="mistakes">
                         <span>You said:</span>
@@ -187,8 +185,8 @@ function focusFirst() {
                     <h1 class="heading">Correct! <i class="ri-sparkling-fill"></i></h1>
                     <p>
                         <strong>{{ result.word.translation }}</strong> &mdash;
-                        {{ result.word.form_infinitive }} / {{ result.word.form_past_participle }} /
-                        {{ result.word.form_simple_past }}
+                        {{ result.word.form_infinitive }} / {{ result.word.form_simple_past }} /
+                        {{ result.word.form_past_participle }}
                     </p>
                     <p>All your answers were correct. Good job!</p>
                 </template>

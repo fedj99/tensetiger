@@ -1,0 +1,35 @@
+.spinner.circle-2 {
+    --spinner-color: #fff;
+
+    width: 48px;
+    height: 48px;
+    display: inline-block;
+    position: relative;
+}
+.spinner.circle-2::after,
+.spinner.circle-2::before {
+    content: "";
+    box-sizing: border-box;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--spinner-color);
+    position: absolute;
+    left: 0;
+    top: 0;
+    animation: circle-2 2s linear infinite;
+}
+.spinner.circle-2::after {
+    animation-delay: -1s;
+}
+
+@keyframes circle-2 {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}

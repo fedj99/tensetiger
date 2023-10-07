@@ -3,6 +3,7 @@ import { postScore } from "@/api";
 import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Centered from "@/components/Centered.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 // import Logo from "@/components/Logo.vue";
 import ProgressBar from "@/components/ProgressBar.vue";
 import Score from "@/components/Score.vue";
@@ -26,6 +27,7 @@ const router = useRouter();
 const gameStore = useGameStore();
 
 const loading = ref(true);
+const loadingMessage = ref("Loading...");
 const error = ref(null);
 
 const userName = ref<string>("");
@@ -62,17 +64,10 @@ onMounted(() => {
 
 // Game methods
 async function newRound() {
-    try {
-        // Get new list of words from API
-        console.log("Fetching a fresh round");
-        loading.value = true;
-        await Promise.all([gameStore.reset(), gameStore.fetchGameConfig()]);
-        // Watchers automatically save value
-    } catch (e: any) {
-        error.value = e;
-    } finally {
-        loading.value = false;
-    }
+    // Get new list of words from API
+    console.log("Fetching a fresh round");
+    await Promise.all([gameStore.reset(), gameStore.fetchGameConfig()]);
+    // Watchers automatically save value
 }
 
 async function resumeFromCache(
@@ -82,61 +77,64 @@ async function resumeFromCache(
     score: string,
     shownKey: string
 ) {
-    try {
-        console.log(
-            "Resuming game from cache, fetching game config",
-            words,
-            wordCount,
-            progress,
-            score,
-            shownKey
-        );
-        loading.value = true;
-        const _wordCount = parseInt(wordCount);
-        const _progress = parseInt(progress);
-        const _words = JSON.parse(words);
-        const _score = parseInt(score);
-        const _shownKey = shownKey as WordFormKey;
+    console.log("Resuming game from cache, fetching game config", progress, wordCount, score);
+    loading.value = true;
+    const _wordCount = parseInt(wordCount);
+    const _progress = parseInt(progress);
+    const _words = JSON.parse(words);
+    const _score = parseInt(score);
+    const _shownKey = shownKey as WordFormKey;
 
-        // Load game config
-        await gameStore.fetchGameConfig();
+    // Load game config
+    await gameStore.fetchGameConfig();
 
-        // Resume game (needs to be done in any case to set state variables)
-        gameStore.resume(_words, _wordCount, _progress, _score, _shownKey);
-        // If already done, finish this round (and post the score)
-        if (_progress >= _wordCount) {
-            // Game was already over (?)
-            endRound();
-        }
-    } catch (e: any) {
-        error.value = e;
-    } finally {
-        loading.value = false;
+    // Resume game (needs to be done in any case to set state variables)
+    gameStore.resume(_words, _wordCount, _progress, _score, _shownKey);
+    // If already done, finish this round (and post the score)
+    if (_progress >= _wordCount) {
+        // Game was already over (?)
+        endRound();
     }
 }
 
-function loadOrFetchWordList() {
-    // Check local storage first
-    const cachedWords = localStorage.getItem(LS_WORDS_KEY);
-    const cachedWordCount = localStorage.getItem(LS_WORD_COUNT_KEY);
-    const cachedProgress = localStorage.getItem(LS_WORD_PROGRESS_KEY);
-    const cachedPoints = localStorage.getItem(LS_SCORE_KEY);
-    const cachedShownKey = localStorage.getItem(LS_SHOWN_KEY);
+async function loadOrFetchWordList() {
+    loading.value = true;
+    loadingMessage.value = "Loading verb forms...";
 
-    // Load from local storage
-    if (cachedWords && cachedWordCount && cachedProgress && cachedPoints && cachedShownKey) {
-        resumeFromCache(cachedWords, cachedWordCount, cachedProgress, cachedPoints, cachedShownKey);
-    } else {
-        // Not cached, start a new round
-        newRound();
+    try {
+        // Check local storage first
+        const cachedWords = localStorage.getItem(LS_WORDS_KEY);
+        const cachedWordCount = localStorage.getItem(LS_WORD_COUNT_KEY);
+        const cachedProgress = localStorage.getItem(LS_WORD_PROGRESS_KEY);
+        const cachedPoints = localStorage.getItem(LS_SCORE_KEY);
+        const cachedShownKey = localStorage.getItem(LS_SHOWN_KEY);
+
+        // Load from local storage
+        if (cachedWords && cachedWordCount && cachedProgress && cachedPoints && cachedShownKey) {
+            await resumeFromCache(
+                cachedWords,
+                cachedWordCount,
+                cachedProgress,
+                cachedPoints,
+                cachedShownKey
+            );
+        } else {
+            // Not cached, start a new round
+            await newRound();
+        }
+
+        nextTick(() => {
+            setTimeout(() => {
+                wordFormRef.value?.focusFirst();
+                console.log("Round started");
+            }, 200);
+        });
+    } catch (e: any) {
+        error.value = e;
+        console.error(e);
+    } finally {
+        loading.value = false;
     }
-
-    nextTick(() => {
-        setTimeout(() => {
-            wordFormRef.value?.focusFirst();
-            console.log("Round started");
-        }, 200);
-    });
 }
 
 function saveProgress(
@@ -159,9 +157,10 @@ async function endRound() {
         console.log("Ending round. Points achieved:", gameStore.score);
         // Post score and get score ID back
         loading.value = true;
+        loadingMessage.value = "Submitting your results...";
         const res = await postScore(userId.value, userName.value, gameStore.score);
         // When the score has been posted, it's safe to delete
-        gameStore.clearCache();
+        await gameStore.clearCache();
         // Then go to leaderboards with score ID, where all results are fetched
         router.push({
             name: "leaderboard",
@@ -169,6 +168,7 @@ async function endRound() {
         });
     } catch (e: any) {
         error.value = e;
+        console.error(e);
     } finally {
         loading.value = false;
     }
@@ -209,9 +209,11 @@ function onHintRevealed() {
 <template>
     <Fullscreen>
         <Centered>
-            <main v-if="loading && !error">Loading...</main>
-            <main v-else-if="error">
+            <main v-if="error">
                 <AxiosErrorWidget :error="error"></AxiosErrorWidget>
+            </main>
+            <main v-else-if="loading">
+                <LoadingSpinner>{{ loadingMessage }}</LoadingSpinner>
             </main>
             <main v-else class="main">
                 <div class="player">

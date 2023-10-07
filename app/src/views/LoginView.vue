@@ -2,14 +2,20 @@
 import "@/assets/components.scss";
 
 import { login } from "@/api";
+import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import Logo from "@/components/Logo.vue";
+import type { AxiosError } from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
 
 const router = useRouter();
 const cookies = useCookies().cookies;
+
+const loading = ref(false);
+const error = ref<AxiosError>();
 
 const userName = ref("");
 
@@ -18,7 +24,13 @@ async function start() {
         alert("Please enter a username");
     }
     // Log in user, this will set the cookies
-    await login(userName.value);
+    loading.value = true;
+    await login(userName.value)
+        .catch((e) => {
+            error.value = e;
+            throw e;
+        })
+        .finally(() => (loading.value = false));
 
     // Go to learning page
     router.push({ name: "learn" });
@@ -34,7 +46,13 @@ onMounted(() => {
 
 <template>
     <Fullscreen :center="true">
-        <main class="main">
+        <main v-if="error">
+            <AxiosErrorWidget :error="error"></AxiosErrorWidget>
+        </main>
+        <main v-else-if="loading" class="loading">
+            <LoadingSpinner>Please wait while we log you in...</LoadingSpinner>
+        </main>
+        <main v-else class="main">
             <Logo></Logo>
             <form class="form" action="" @submit.prevent="start()">
                 <input

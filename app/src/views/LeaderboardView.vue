@@ -2,6 +2,7 @@
 import { getHighscore, getLatestScores, getScore, getTopKScores } from "@/api";
 import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import ScoreTable from "@/components/ScoreTable.vue";
 import type { Score } from "@/game";
 import { useGameStore } from "@/stores/game";
@@ -37,7 +38,9 @@ const ending = computed(() => {
     else return "You can do better than this...";
 });
 
-onMounted(async () => {
+onMounted(fetchScores);
+
+async function fetchScores() {
     try {
         loading.value = true;
         const [scoreRes, topKRes] = await Promise.all([
@@ -54,12 +57,13 @@ onMounted(async () => {
         ]);
         latestScores.value = latestRes.data as Score[];
         personalHighScore.value = highscoreRes.data as Score;
-        loading.value = false;
     } catch (e) {
-        console.log(e);
         error.value = e;
+        console.error(e);
+    } finally {
+        loading.value = false;
     }
-});
+}
 
 async function resetGame() {
     await gameStore.reset();
@@ -69,11 +73,13 @@ async function resetGame() {
 
 <template>
     <Fullscreen center style="padding-bottom: 5em">
-        <div v-if="loading && !error" class="loading">Loading...</div>
-        <div v-else-if="error" class="error">
+        <main v-if="error" class="error">
             <AxiosErrorWidget :error="error"></AxiosErrorWidget>
-        </div>
-        <div v-else class="leaderboard">
+        </main>
+        <main v-else-if="loading" class="loading">
+            <LoadingSpinner>Getting latest high scores...</LoadingSpinner>
+        </main>
+        <main v-else class="leaderboard">
             <h1>
                 {{ greeting }}, <span class="username">{{ username }}</span
                 >!
@@ -141,7 +147,7 @@ async function resetGame() {
             <div>
                 <button @click="resetGame()" class="reset input-huge">Play Again!</button>
             </div>
-        </div>
+        </main>
     </Fullscreen>
 </template>
 
