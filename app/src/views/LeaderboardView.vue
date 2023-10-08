@@ -2,8 +2,9 @@
 import { getHighscore, getLatestScores, getScore, getTopKScores } from "@/api";
 import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
+import GlobalLeaderboard from "@/components/GlobalLeaderboard.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
-import ScoreTable from "@/components/ScoreTable.vue";
+import UserLeaderboard from "@/components/UserLeaderboard.vue";
 import type { Score } from "@/game";
 import { useGameStore } from "@/stores/game";
 import { computed, onMounted, ref } from "vue";
@@ -120,26 +121,10 @@ async function resetGame() {
             <hr />
 
             <div class="tables">
-                <div>
-                    <h2>Your latest scores</h2>
-                    <ScoreTable
-                        v-if="latestScores"
-                        :scores="latestScores"
-                        :show-player="false"
-                        :show-rank="false"
-                    ></ScoreTable>
-                    <div v-else>No scores yet</div>
-                </div>
-
-                <div>
-                    <h2>Top {{ TOP_K }} players</h2>
-                    <ScoreTable
-                        v-if="topKScores"
-                        :scores="topKScores"
-                        date-format="short"
-                    ></ScoreTable>
-                    <div v-else>No scores yet</div>
-                </div>
+                <h2>Your latest scores</h2>
+                <UserLeaderboard v-if="latestScores" :scores="latestScores"></UserLeaderboard>
+                <h2>Top {{ TOP_K }} players</h2>
+                <GlobalLeaderboard :scores="topKScores"></GlobalLeaderboard>
             </div>
 
             <hr />
@@ -153,6 +138,11 @@ async function resetGame() {
 
 <style lang="scss" scoped>
 @import "@/assets/components.scss";
+
+.leaderboard {
+    max-width: 100vw;
+    padding: var(--padding);
+}
 
 .username {
     color: var(--color-accent-secondary);
@@ -185,15 +175,8 @@ p {
     margin: var(--padding) 0;
 }
 
-.tables {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 2em;
-}
-
 .reset {
-    width: 100%;
+    min-width: min(80vw, 20em);
 }
 
 @import "@/assets/base.scss";
@@ -201,12 +184,6 @@ p {
 @media screen and (max-width: $bp-mobile) {
     .leaderboard {
         padding: var(--padding-lg);
-    }
-
-    .tables {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
     }
 }
 </style>

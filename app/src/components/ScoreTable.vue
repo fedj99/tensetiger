@@ -67,20 +67,21 @@ function formatDate(dateString: string) {
 <style lang="scss" scoped>
 @import "@/assets/base.scss";
 
-@media screen and (max-width: $bp-mobile) {
-    .table-container {
-        // overflow-x: auto;
-        max-width: 80vw;
-        overflow-x: auto;
+.table-container {
+    overflow-x: auto;
 
-        table {
-            width: 100%;
+    table {
+        min-width: min(20em, 80vw);
+        margin: auto;
 
-            th,
-            td {
-                word-wrap: break-word;
-            }
+        th,
+        td {
+            word-wrap: break-word;
         }
     }
+}
+
+@media screen and (max-width: $bp-mobile) {
+    // Optimize for mobile
 }
 </style>
