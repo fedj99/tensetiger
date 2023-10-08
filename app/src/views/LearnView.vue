@@ -233,7 +233,7 @@ function onHintRevealed() {
                 </div>
 
                 <Score></Score>
-                <StreakWidget v-if="gameStore.streak > 0"></StreakWidget>
+                <StreakWidget v-if="gameStore.currentStreakBonus > 0"></StreakWidget>
                 <!-- <Logo></Logo> -->
 
                 <ProgressBar
