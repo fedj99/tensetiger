@@ -56,11 +56,11 @@ onMounted(() => {
             <Logo></Logo>
             <form class="form" action="" @submit.prevent="start()">
                 <input
+                    id="username"
                     v-model="userName"
                     required
                     class="input-huge"
                     style="flex: 1"
-                    id="username"
                     type="text"
                     placeholder="Enter a username..."
                     maxlength="32"
@@ -69,6 +69,14 @@ onMounted(() => {
                     <i class="ri-arrow-right-double-line"></i> Start Learning
                 </button>
             </form>
+
+            <RouterLink
+                :to="{ name: 'leaderboard' }"
+                class="link-leaderboard button button-large button-accent-secondary"
+                style="font-weight: normal"
+            >
+                See Leaderboard
+            </RouterLink>
         </main>
     </Fullscreen>
 </template>
@@ -79,6 +87,7 @@ onMounted(() => {
 
 .main {
     width: min(90vw, 50em);
+    position: relative;
 }
 
 .form {
@@ -87,6 +96,10 @@ onMounted(() => {
     display: flex;
     align-items: stretch;
     gap: var(--gap);
+}
+
+.link-leaderboard {
+    margin-top: 5em;
 }
 
 @media screen and (max-width: $bp-mobile) {

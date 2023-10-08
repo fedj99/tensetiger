@@ -21,7 +21,8 @@ const props = withDefaults(defineProps<Props>(), { center: false });
 
 <style lang="scss" scoped>
 .fullscreen-container {
-    min-height: 100vh;
-    min-width: 100vw;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 </style>

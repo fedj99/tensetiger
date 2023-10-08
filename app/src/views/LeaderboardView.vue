@@ -118,7 +118,7 @@ async function resetGame() {
             <hr />
 
             <div>
-                <button @click="resetGame()" class="reset input-huge">Play Again!</button>
+                <button class="reset input-huge" @click="resetGame()">Play Again!</button>
             </div>
         </main>
     </Fullscreen>
@@ -136,8 +136,7 @@ h1 {
     margin: var(--padding) 0;
     line-height: 1;
     font-size: var(--font-size-huge);
-    word-wrap: break-word;
-    max-width: 80vw;
+    overflow-wrap: break-word;
 }
 
 h2 {

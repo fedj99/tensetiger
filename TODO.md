@@ -7,15 +7,16 @@
 - [x] Error pages
 - [x] Test weird usernames (spaces, emojis, etc.)
 - [x] Mobile optimization
-- [ ] Performance graph
+- [x] Performance graph
 - [ ] Dark mode
 - [x] Correct order of solutions
 - [x] Remove duplicated solutions from mistake screen
 - [ ] Password authentication
 - [x] Display badge on 2x and 3x points words
 - [ ] Clean up game state management
-- [ ] Streaks
+- [x] Streaks
 - [x] Fix mobile leaderboards with long username
 - [x] Import word list
 - [x] Make leaderboards accessible without user
-- [ ] Link to leaderboard from homepage
+- [x] Link to leaderboard from homepage
+- [ ] Form improvements: No capitalization, move to next field automatically

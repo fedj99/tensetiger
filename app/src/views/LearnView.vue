@@ -229,7 +229,7 @@ function onHintRevealed() {
                 </div>
 
                 <Score></Score>
-                <StreakWidget></StreakWidget>
+                <StreakWidget v-if="gameStore.streak > 0"></StreakWidget>
                 <!-- <Logo></Logo> -->
 
                 <ProgressBar
@@ -240,6 +240,7 @@ function onHintRevealed() {
                 <hr />
 
                 <WordForm
+                    ref="wordFormRef"
                     :game-config="gameStore.config"
                     :word="gameStore.currentWord"
                     :shown-key="gameStore.shownKey"
@@ -249,7 +250,6 @@ function onHintRevealed() {
                     @submit="onSubmit"
                     @reveal-hint="onHintRevealed"
                     @next="onNext"
-                    ref="wordFormRef"
                 ></WordForm>
 
                 <hr />

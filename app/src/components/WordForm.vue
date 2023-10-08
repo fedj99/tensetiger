@@ -93,15 +93,15 @@ function focusFirst() {
         <div v-for="key of wordFormKeys" :key="key" class="verb-form">
             <label :for="key">{{ wordFormNames[key] }}</label>
             <input
+                :id="key"
+                ref="inputFields"
                 v-model="editableWords[key]"
                 :readonly="shownKey == key"
                 required
                 class="input-huge"
                 type="text"
                 :name="key"
-                :id="key"
                 :class="{ active: shownKey != key }"
-                ref="inputFields"
             />
         </div>
 
@@ -109,12 +109,12 @@ function focusFirst() {
             <label for="translation">German translation</label>
             <div class="control-group">
                 <input
+                    id="translation"
                     :value="hintRevealed ? word.translation : 'Translation'"
                     readonly
                     type="text"
                     autocomplete="off"
                     name="translation"
-                    id="translation"
                     :style="hintStyle"
                     tabindex="-1"
                 />
@@ -192,8 +192,8 @@ function focusFirst() {
                 </template>
                 <span class="spacer"></span>
                 <button
-                    type="button"
                     ref="nextButton"
+                    type="button"
                     class="button-contrast"
                     @click="$emit('next')"
                 >
@@ -449,6 +449,10 @@ input[type="text"].active {
     .mistakes {
         grid-auto-flow: row;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .result-overlay .heading {
+        font-size: var(--font-size-huge);
     }
 }
 </style>

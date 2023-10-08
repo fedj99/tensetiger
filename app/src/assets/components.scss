@@ -1,4 +1,20 @@
+@import "@/assets/main.scss";
+
 .input-huge {
     font-size: var(--font-size-large);
     padding: var(--padding-lg);
+}
+
+.button-large {
+    font-size: calc(1.2 * var(--font-size-regular));
+    padding: var(--padding);
+}
+
+.button-huge {
+    font-size: var(--font-size-large);
+    padding: var(--padding-lg);
+}
+
+.button-accent-secondary {
+    @include button-style(var(--color-accent-secondary-rgb), var(--color-contrast-secondary));
 }

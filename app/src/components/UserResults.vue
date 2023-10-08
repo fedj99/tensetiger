@@ -53,6 +53,13 @@ const ending = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+h1 {
+    margin: var(--padding) 0;
+    line-height: 1;
+    font-size: var(--font-size-huge);
+    overflow-wrap: break-word;
+}
+
 .username {
     color: var(--color-accent-secondary);
 }
