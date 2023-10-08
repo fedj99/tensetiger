@@ -87,16 +87,14 @@ export const useGameStore = defineStore("game", () => {
         streak.value++;
         // Check if streak has ended. A streak ends either when the user makes a mistake or the last
         // round is played (i.e. there are no more rounds)
-        if (result.hasMistakes || progress.value >= wordCount.value - 1) {
+        if (result.hasMistakes) {
             // Streak bonus is only applied at end of streak, calculate bonus based on streak
             console.log("Awarding streak bonus:", currentStreakBonus.value);
             score.value += currentStreakBonus.value;
 
-            // Reset streak if necessary
-            if (result.hasMistakes) {
-                console.log("Resetting streak");
-                streak.value = 0;
-            }
+            // Reset streak
+            console.log("Resetting streak");
+            streak.value = 0;
         }
     }
 
@@ -108,6 +106,11 @@ export const useGameStore = defineStore("game", () => {
         const res = await getGameConfig();
         _config.value = res.data;
         return _config.value;
+    }
+
+    function finish() {
+        // If there currently still is a streak, award the points
+        score.value += currentStreakBonus.value;
     }
 
     return {
@@ -127,5 +130,6 @@ export const useGameStore = defineStore("game", () => {
         addPoints,
         deductPoints,
         fetchGameConfig,
+        finish,
     };
 });

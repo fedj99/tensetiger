@@ -7,7 +7,7 @@ const gameStore = useGameStore();
 <template>
     <div class="box">
         <span class="prefix">Your score:</span>
-        <span class="score">{{ gameStore.score + gameStore.currentStreakBonus }}</span>
+        <span class="score">{{ gameStore.score }}</span>
         <span class="suffix">pts.</span>
     </div>
 </template>

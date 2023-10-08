@@ -37,7 +37,7 @@ const currentResult = ref<Result | undefined>(undefined);
 const wordFormRef = ref<InstanceType<typeof WordForm> | null>(null);
 
 // Watch when route changes, then get a new (or cached word list)
-watch([() => route.params], () => loadOrFetchWordList(), { immediate: true });
+watch([() => route.params], () => startRound(), { immediate: true });
 
 // Watch parameters and persist to resume later
 watch(
@@ -64,7 +64,7 @@ onMounted(() => {
 });
 
 // Game methods
-async function newRound() {
+async function openNewRound() {
     // Get new list of words from API
     console.log("Fetching a fresh round");
     await Promise.all([gameStore.reset(), gameStore.fetchGameConfig()]);
@@ -98,7 +98,7 @@ async function resumeFromCache(
     }
 }
 
-async function loadOrFetchWordList() {
+async function startRound() {
     loading.value = true;
     loadingMessage.value = "Loading verb forms...";
 
@@ -121,8 +121,10 @@ async function loadOrFetchWordList() {
             );
         } else {
             // Not cached, start a new round
-            await newRound();
+            await openNewRound();
         }
+
+        console.log("Game config:", gameStore.config);
 
         nextTick(() => {
             setTimeout(() => {
@@ -155,6 +157,8 @@ function saveProgress(
 
 async function endRound() {
     try {
+        // Signal to the game store that the round has finished
+        gameStore.finish();
         console.log("Ending round. Points achieved:", gameStore.score);
         // Post score and get score ID back
         loading.value = true;
