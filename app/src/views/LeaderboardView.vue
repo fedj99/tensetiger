@@ -5,6 +5,7 @@ import Fullscreen from "@/components/Fullscreen.vue";
 import GlobalLeaderboard from "@/components/GlobalLeaderboard.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import UserLeaderboard from "@/components/UserLeaderboard.vue";
+import UserResults from "@/components/UserResults.vue";
 import type { Score } from "@/game";
 import { useGameStore } from "@/stores/game";
 import { computed, onMounted, ref } from "vue";
@@ -20,7 +21,7 @@ const gameStore = useGameStore();
 const loading = ref(true);
 const error = ref();
 
-const username = ref(route.query.user);
+const username = ref<string>(route.query.user as string);
 const score = ref<Score>();
 const topKScores = ref<Score[]>();
 const latestScores = ref<Score[]>();
@@ -28,36 +29,48 @@ const personalHighScore = ref<Score>();
 const globalHighScore = ref<Score>();
 
 const scoreId = computed(() => parseInt(route.query.score_id as string));
-const greeting = computed(() => {
-    if (!score.value) return "Loading...";
-    if (score.value.score > 0) return "Good job";
-    else return "Better luck next time";
-});
-const ending = computed(() => {
-    if (!score.value) return "Loading...";
-    if (score.value.score > 0) return "Impressive!";
-    else return "You can do better than this...";
-});
+
+const scoreIdProvided = computed(() => route.query.user != undefined);
 
 onMounted(fetchScores);
 
 async function fetchScores() {
     try {
         loading.value = true;
-        const [scoreRes, topKRes] = await Promise.all([
-            getScore(scoreId.value),
-            getTopKScores(TOP_K),
-        ]);
-        score.value = scoreRes.data as Score;
-        topKScores.value = topKRes.data as Score[];
-        globalHighScore.value = topKScores.value.length > 0 ? topKScores.value[0] : undefined;
-        username.value = score.value.username;
-        const [latestRes, highscoreRes] = await Promise.all([
-            getLatestScores(score.value.user_id, LATEST_K),
-            getHighscore(score.value.user_id),
-        ]);
-        latestScores.value = latestRes.data as Score[];
-        personalHighScore.value = highscoreRes.data as Score;
+
+        // Array of promises to wait for
+        const promises: Promise<any>[] = [];
+
+        // Global leaderboards
+        promises.push(
+            getTopKScores(TOP_K).then((x) => {
+                const scores = x.data;
+                topKScores.value = scores;
+                globalHighScore.value = scores.length > 0 ? scores[0] : undefined;
+            })
+        );
+
+        // If score ID provided, fetch user-specific data
+        if (scoreIdProvided.value) {
+            // Gets the score referred to by score_id
+            const getScorePromise = getScore(scoreId.value).then((x) => (score.value = x.data));
+            promises.push(getScorePromise);
+            // Get personal latest scores
+            promises.push(
+                getScorePromise
+                    .then((score) => getLatestScores(score.user_id, LATEST_K))
+                    .then((x) => (latestScores.value = x.data))
+            );
+            // Get personal high score
+            promises.push(
+                getScorePromise
+                    .then((score) => getHighscore(score.user_id))
+                    .then((x) => (personalHighScore.value = x.data))
+            );
+        }
+
+        // Wait for all results
+        await Promise.all(promises);
     } catch (e) {
         error.value = e;
         console.error(e);
@@ -81,48 +94,23 @@ async function resetGame() {
             <LoadingSpinner>Getting latest high scores...</LoadingSpinner>
         </main>
         <main v-else class="leaderboard">
-            <h1>
-                {{ greeting }}, <span class="username">{{ username }}</span
-                >!
-            </h1>
-            <p>You scored</p>
-            <h1 class="score">{{ score?.score }}</h1>
-            <p>points. {{ ending }}</p>
+            <UserResults
+                v-if="score && personalHighScore && globalHighScore"
+                :score="score"
+                :personal-high-score="personalHighScore"
+                :global-high-score="globalHighScore"
+                :username="username"
+            ></UserResults>
 
-            <hr />
-
-            <template v-if="score && personalHighScore && globalHighScore">
-                <p
-                    v-if="
-                        score.score == personalHighScore.score &&
-                        score.date == personalHighScore.date
-                    "
-                >
-                    <template
-                        v-if="
-                            score.score == globalHighScore.score &&
-                            score.user_id == globalHighScore.user_id &&
-                            score.date == globalHighScore.date
-                        "
-                    >
-                        🎉🎉🎉 <strong>NEW HIGH SCORE!!!</strong> 🎉🎉🎉
-                    </template>
-                    <template v-else> 🎉 <strong>New personal record!</strong> 🎉 </template>
-                </p>
-                <p v-else>
-                    Previous personal record:
-                    <strong class="highscore">{{
-                        personalHighScore?.score || "Loading..."
-                    }}</strong>
-                </p>
-            </template>
-            <p v-else>High score loading...</p>
+            <h1 v-else>General Leaderboard</h1>
 
             <hr />
 
             <div class="tables">
-                <h2>Your latest scores</h2>
-                <UserLeaderboard v-if="latestScores" :scores="latestScores"></UserLeaderboard>
+                <template v-if="scoreIdProvided">
+                    <h2>Your latest scores</h2>
+                    <UserLeaderboard v-if="latestScores" :scores="latestScores"></UserLeaderboard>
+                </template>
                 <h2>Top {{ TOP_K }} players</h2>
                 <GlobalLeaderboard :scores="topKScores"></GlobalLeaderboard>
             </div>
@@ -144,15 +132,6 @@ async function resetGame() {
     padding: var(--padding);
 }
 
-.username {
-    color: var(--color-accent-secondary);
-}
-
-.highscore {
-    font-family: var(--font-default-serif);
-    font-size: var(--font-size-large);
-}
-
 h1 {
     margin: var(--padding) 0;
     line-height: 1;
@@ -163,16 +142,6 @@ h1 {
 
 h2 {
     font-size: var(--font-size-large);
-}
-
-.score {
-    margin: 0;
-    line-height: 1;
-    font-size: 72pt;
-}
-
-p {
-    margin: var(--padding) 0;
 }
 
 .reset {

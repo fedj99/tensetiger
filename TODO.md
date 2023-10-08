@@ -17,5 +17,5 @@
 - [ ] Streaks
 - [x] Fix mobile leaderboards with long username
 - [x] Import word list
-- [ ] Make leaderboards accessible without user
+- [x] Make leaderboards accessible without user
 - [ ] Link to leaderboard from homepage

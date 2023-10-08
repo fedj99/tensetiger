@@ -1,4 +1,6 @@
 import axios from "axios";
+import { type GameConfig, type Score } from "./game";
+import type { Word } from "./words";
 
 if (!import.meta.env.VITE_API_URL || import.meta.env.VITE_API_URL == "")
     throw "Please specify VITE_API_URL environment variable";
@@ -15,11 +17,11 @@ export function login(username: string) {
 }
 
 export function getWordList() {
-    return api.get("/words/batch");
+    return api.get<Word[]>("/words/batch");
 }
 
 export function getGameConfig() {
-    return api.get("/game-config");
+    return api.get<GameConfig>("/game-config");
 }
 
 export function postScore(userId: number, username: string, score: number) {
@@ -27,17 +29,17 @@ export function postScore(userId: number, username: string, score: number) {
 }
 
 export function getScore(scoreId: number) {
-    return api.get(`/scores/${scoreId}`);
+    return api.get<Score>(`/scores/${scoreId}`);
 }
 
 export function getTopKScores(k: number = 5) {
-    return api.get("/scores/topk", { params: { k } });
+    return api.get<Score[]>("/scores/topk", { params: { k } });
 }
 
 export function getLatestScores(userId: number, k: number = 5) {
-    return api.get("/scores/latest", { params: { user_id: userId, k } });
+    return api.get<Score[]>("/scores/latest", { params: { user_id: userId, k } });
 }
 
 export function getHighscore(userId: number) {
-    return api.get("/scores/highscore", { params: { user_id: userId } });
+    return api.get<Score>("/scores/highscore", { params: { user_id: userId } });
 }
