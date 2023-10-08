@@ -3,10 +3,10 @@
 <template>
     <footer>
         &copy; 2023 <a href="mailto:federico.mantovani@hispeed.ch">Federico Mantovani</a>
-        <span class="sep">&mdash;</span> <a href="https://gitlab.com/fettemanto/b3">Source Code</a>
-        <span class="sep">&mdash;</span>
+        <span class="sep"> &mdash;</span> <a href="https://gitlab.com/fettemanto/b3">Source Code</a>
+        <span class="sep"> &mdash;</span>
         <a href="https://gitlab.com/fettemanto/b3/-/issues/new">Report a bug</a>
-        <span class="sep">&mdash;</span>
+        <span class="sep"> &mdash; </span>
         <RouterLink :to="{ name: 'attributions' }">Attributions</RouterLink>
     </footer>
 </template>
@@ -21,16 +21,10 @@ footer {
 }
 
 @media screen and (max-width: $bp-mobile) {
-    .sep {
-        display: none;
-    }
-
     footer {
+        font-size: var(--font-size-small);
+        margin-top: 3em;
         padding: var(--padding);
-
-        * {
-            display: block;
-        }
     }
 }
 </style>
