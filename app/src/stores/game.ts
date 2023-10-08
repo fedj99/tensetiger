@@ -53,6 +53,10 @@ export const useGameStore = defineStore("game", () => {
         localStorage.removeItem(LS_GAME_STATE_KEY);
     }
 
+    function hasSavedGameState() {
+        return localStorage.getItem(LS_GAME_STATE_KEY) != undefined;
+    }
+
     function saveState() {
         const state: GameState = {
             words: words.value,
@@ -144,6 +148,7 @@ export const useGameStore = defineStore("game", () => {
         hintRevealed,
         streak,
         currentStreakBonus,
+        hasSavedGameState,
         next,
         reset,
         clearCache,

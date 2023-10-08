@@ -6,6 +6,7 @@ import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import Logo from "@/components/Logo.vue";
+import { useGameStore } from "@/stores/game";
 import type { AxiosError } from "axios";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -13,6 +14,7 @@ import { useCookies } from "vue3-cookies";
 
 const router = useRouter();
 const cookies = useCookies().cookies;
+const gameStore = useGameStore();
 
 const loading = ref(false);
 const error = ref<AxiosError>();
@@ -20,11 +22,9 @@ const error = ref<AxiosError>();
 const userName = ref("");
 const userId = ref<number>(-1);
 const loggedIn = computed(() => userId.value != -1);
-
-function start() {
-    // Go to learning page
-    router.push({ name: "learn" });
-}
+const startText = computed(() =>
+    gameStore.hasSavedGameState() ? "Keep Learning" : "Start Learning"
+);
 
 onMounted(() => {
     const loggedInUsername = decodeURI(cookies.get("username"));
@@ -94,17 +94,19 @@ function logout() {
 
                 <div class="buttons">
                     <RouterLink :to="{ name: 'learn' }" class="button button-huge success">
-                        <i class="ri-arrow-right-double-line"></i> Start Learning
+                        <i class="ri-arrow-right-double-line"></i> {{ startText }}
                     </RouterLink>
 
                     <RouterLink
                         :to="{ name: 'leaderboard' }"
-                        class="link-leaderboard button button-large outlined"
+                        class="link-leaderboard button outlined"
                     >
-                        See Leaderboard
+                        <i class="ri-vip-crown-fill"></i> See Leaderboard
                     </RouterLink>
 
-                    <button class="danger button-large outlined" @click="logout()">Logout</button>
+                    <button class="danger outlined" @click="logout()">
+                        <i class="ri-logout-box-r-fill"></i> Logout
+                    </button>
                 </div>
             </div>
         </main>
@@ -117,6 +119,7 @@ function logout() {
 
 .greeting {
     font-size: var(--font-size-large);
+    font-family: var(--font-default-sans);
 }
 
 .main {

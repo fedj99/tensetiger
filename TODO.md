@@ -24,3 +24,4 @@
 - [x] Correct order for performance graph
 - [x] Improve mobile hint layout (lots of accidental clicks)
 - [x] Load shown hint from cache
+- [ ] Change app title and favicon

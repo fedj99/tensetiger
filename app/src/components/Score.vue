@@ -32,11 +32,6 @@ const gameStore = useGameStore();
 }
 
 @media screen and (max-width: $bp-mobile) {
-    .prefix,
-    .suffix {
-        display: none;
-    }
-
     .score {
         font-size: var(--font-size-huge);
     }

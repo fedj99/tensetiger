@@ -97,11 +97,6 @@ async function fetchScores() {
         loading.value = false;
     }
 }
-
-async function resetGame() {
-    await gameStore.reset();
-    router.push({ name: "login" });
-}
 </script>
 
 <template>
@@ -137,7 +132,9 @@ async function resetGame() {
             <hr />
 
             <div>
-                <button class="reset input-huge" @click="resetGame()">Play Again!</button>
+                <RouterLink :to="{ name: 'home' }" class="button reset button-huge"
+                    >Play Again!</RouterLink
+                >
             </div>
         </main>
     </Fullscreen>

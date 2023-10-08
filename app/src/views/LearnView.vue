@@ -28,6 +28,7 @@ const userName = ref<string>("");
 const userId = ref<number>(-1);
 const currentResult = ref<Result | undefined>(undefined);
 const wordFormRef = ref<InstanceType<typeof WordForm> | null>(null);
+const showPlayer = false;
 
 // Watch when route changes, then get a new (or cached word list)
 watch([() => route.params], () => startRound(), { immediate: true });
@@ -166,7 +167,7 @@ function onHintRevealed() {
                 <LoadingSpinner>{{ loadingMessage }}</LoadingSpinner>
             </main>
             <main v-else class="main">
-                <div class="player">
+                <div v-if="showPlayer" class="player">
                     <span> You are playing as: </span>
                     <strong>{{ userName }}</strong>
                     <RouterLink
