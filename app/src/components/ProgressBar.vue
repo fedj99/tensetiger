@@ -43,7 +43,6 @@ const fillPercent = computed(() => fillRatio.value * 100);
     .text {
         font-weight: bold;
         color: var(--color-accent-secondary);
-        z-index: 1;
     }
     .pb-filler {
         position: absolute;

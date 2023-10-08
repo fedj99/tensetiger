@@ -125,6 +125,10 @@ h6 {
     font-size: 1rem;
 }
 
+.color-danger {
+    color: var(--color-danger);
+}
+
 /* FORMS */
 
 @mixin button-style($color-rgb, $color-contrast, $bg-alpha: 1) {
@@ -156,6 +160,14 @@ button,
         box-shadow 200ms;
 
     @include button-style(var(--color-accent-primary-rgb), var(--color-contrast-primary));
+
+    &.danger {
+        @include button-style(var(--color-danger-rgb), var(--color-danger-contrast));
+    }
+
+    &.success {
+        @include button-style(var(--color-success-rgb), var(--color-success-contrast));
+    }
 
     &:focus {
         outline-width: var(--outline-width);

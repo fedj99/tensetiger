@@ -9,6 +9,7 @@ import {
     type WordFormKey,
 } from "@/words";
 import { computed, nextTick, ref, watch } from "vue";
+import Modal from "./Modal.vue";
 
 const props = defineProps<{
     gameConfig: GameConfig;
@@ -33,6 +34,7 @@ const submitDisabled = ref<boolean>(false);
 
 const inputFields = ref<HTMLInputElement[]>([]);
 const nextButton = ref<HTMLButtonElement>();
+const revealHintModal = ref<InstanceType<typeof Modal>>();
 
 const hintStyle = computed(() => {
     if (hintRevealed.value) {
@@ -122,10 +124,10 @@ function focusFirst() {
                     <button
                         v-if="!hintRevealed"
                         type="button"
-                        class="button-small"
-                        @click="revealHint()"
+                        class="button-small danger"
+                        @click="revealHintModal?.open()"
                     >
-                        Reveal Hint (-{{ gameConfig.hintRevealedPenalty }} points)
+                        Reveal
                     </button>
                 </div>
             </div>
@@ -155,12 +157,16 @@ function focusFirst() {
                                     :value="mistake.actual"
                                     class="wrong"
                                     tabindex="-1"
+                                    autocapitalize="off"
+                                    autocorrect="off"
                                 />
                                 <input
                                     type="text"
                                     readonly
                                     :value="mistake.expected"
                                     tabindex="-1"
+                                    autocapitalize="off"
+                                    autocorrect="off"
                                 />
                             </template>
                             <template v-else>
@@ -170,12 +176,16 @@ function focusFirst() {
                                     :value="result.word[key]"
                                     class="correct"
                                     tabindex="-1"
+                                    autocapitalize="off"
+                                    autocorrect="off"
                                 />
                                 <input
                                     type="text"
                                     readonly
                                     :value="result.word[key]"
                                     tabindex="-1"
+                                    autocapitalize="off"
+                                    autocorrect="off"
                                 />
                             </template>
                         </template>
@@ -214,6 +224,14 @@ function focusFirst() {
             </Transition>
         </div>
     </form>
+
+    <Modal
+        ref="revealHintModal"
+        :buttons="['cancel', { text: 'Show Hint', role: 'confirm', class: 'danger' }]"
+        @confirm="revealHint()"
+        >Reveal translation?
+        <strong class="color-danger">(-{{ gameConfig.hintRevealedPenalty }} points)</strong></Modal
+    >
 </template>
 
 <style lang="scss" scoped="">
@@ -437,14 +455,14 @@ input[type="text"].active {
         flex-direction: column;
     }
 
-    .control-group .controls {
-        position: relative;
-        padding: var(--padding) 0;
+    // .control-group .controls {
+    //     position: relative;
+    //     padding: var(--padding) 0;
 
-        button {
-            flex: 1;
-        }
-    }
+    //     button {
+    //         flex: 1;
+    //     }
+    // }
 
     .mistakes {
         grid-auto-flow: row;

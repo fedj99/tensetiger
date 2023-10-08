@@ -19,6 +19,8 @@
 - [x] Import word list
 - [x] Make leaderboards accessible without user
 - [x] Link to leaderboard from homepage
-- [ ] Form improvements: No capitalization, move to next field automatically
-- [ ] Only show streak from first checkpoint
+- [x] Form improvements: No capitalization, move to next field automatically
+- [x] Only show streak from first checkpoint
 - [x] Correct order for performance graph
+- [x] Improve mobile hint layout (lots of accidental clicks)
+- [ ] Load shown hint from cache

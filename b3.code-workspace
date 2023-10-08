@@ -12,6 +12,7 @@
 	],
 	"settings": {
 		"pylint.importStrategy": "fromEnvironment",
-		"editor.linkedEditing": true
+		"editor.linkedEditing": true,
+		"vue.inlayHints.inlineHandlerLeading": false,
 	}
 }
