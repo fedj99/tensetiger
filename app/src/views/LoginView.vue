@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import "@/assets/components.scss";
 
-import { login } from "@/api";
+import { login as apiLogin } from "@/api";
 import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import Logo from "@/components/Logo.vue";
 import type { AxiosError } from "axios";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
 
@@ -18,30 +18,46 @@ const loading = ref(false);
 const error = ref<AxiosError>();
 
 const userName = ref("");
+const userId = ref<number>(-1);
+const loggedIn = computed(() => userId.value != -1);
 
-async function start() {
+function start() {
+    // Go to learning page
+    router.push({ name: "learn" });
+}
+
+onMounted(() => {
+    const loggedInUsername = decodeURI(cookies.get("username"));
+    const loggedInUserId = parseInt(decodeURI(cookies.get("user_id")));
+    if (loggedInUsername && loggedInUserId) {
+        userName.value = loggedInUsername;
+        userId.value = loggedInUserId;
+    }
+});
+
+async function login() {
     if (!userName.value) {
         alert("Please enter a username");
     }
     // Log in user, this will set the cookies
     loading.value = true;
-    await login(userName.value)
+    const ans = await apiLogin(userName.value)
         .catch((e) => {
             error.value = e;
             throw e;
         })
         .finally(() => (loading.value = false));
 
-    // Go to learning page
-    router.push({ name: "learn" });
+    userName.value = ans.data.user.username;
+    userId.value = ans.data.user.id;
 }
 
-onMounted(() => {
-    const cachedUserName = cookies.get("username");
-    if (cachedUserName) {
-        userName.value = cachedUserName;
-    }
-});
+function logout() {
+    cookies.remove("username");
+    cookies.remove("user_id");
+    userName.value = "";
+    userId.value = -1;
+}
 </script>
 
 <template>
@@ -54,7 +70,7 @@ onMounted(() => {
         </main>
         <main v-else class="main">
             <Logo></Logo>
-            <form class="form" action="" @submit.prevent="start()">
+            <form v-if="!loggedIn" class="form" action="" @submit.prevent="login()">
                 <input
                     id="username"
                     v-model="userName"
@@ -66,17 +82,31 @@ onMounted(() => {
                     maxlength="32"
                 />
                 <button type="submit" class="input-huge">
-                    <i class="ri-arrow-right-double-line"></i> Start Learning
+                    <i class="ri-login-box-line"></i> Log in
                 </button>
             </form>
 
-            <RouterLink
-                :to="{ name: 'leaderboard' }"
-                class="link-leaderboard button button-large button-accent-secondary"
-                style="font-weight: normal"
-            >
-                See Leaderboard
-            </RouterLink>
+            <div v-else>
+                <h2 class="greeting">
+                    Welcome back, <span class="color-secondary">{{ userName }}</span
+                    >!
+                </h2>
+
+                <div class="buttons">
+                    <RouterLink :to="{ name: 'learn' }" class="button button-huge success">
+                        <i class="ri-arrow-right-double-line"></i> Start Learning
+                    </RouterLink>
+
+                    <RouterLink
+                        :to="{ name: 'leaderboard' }"
+                        class="link-leaderboard button button-large outlined"
+                    >
+                        See Leaderboard
+                    </RouterLink>
+
+                    <button class="danger button-large outlined" @click="logout()">Logout</button>
+                </div>
+            </div>
         </main>
     </Fullscreen>
 </template>
@@ -84,6 +114,10 @@ onMounted(() => {
 <style lang="scss" scoped>
 @import "@/assets/components.scss";
 @import "@/assets/base.scss";
+
+.greeting {
+    font-size: var(--font-size-large);
+}
 
 .main {
     width: min(90vw, 50em);
@@ -98,8 +132,13 @@ onMounted(() => {
     gap: var(--gap);
 }
 
-.link-leaderboard {
-    margin-top: 5em;
+.buttons {
+    max-width: 16em;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--gap-lg);
 }
 
 @media screen and (max-width: $bp-mobile) {

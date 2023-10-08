@@ -85,16 +85,17 @@ defineExpose({ toggle, open, close });
     <div class="modal-base">
         <Transition
             class="animate__animated"
-            enter-active-class="animate__fadeIn animate__faster"
+            style="animation-duration: 200ms"
+            enter-active-class="animate__fadeIn"
             leave-active-class="animate__fadeOut"
         >
             <div v-if="isOpen" class="modal-background"></div>
         </Transition>
         <Transition
             class="animate__animated"
-            style="animation-duration: 600ms"
-            enter-active-class="animate__bounceIn"
-            leave-active-class="animate__bounceOut"
+            style="animation-duration: 200ms"
+            enter-active-class="animate__zoomIn"
+            leave-active-class="animate__zoomOut"
         >
             <div v-if="isOpen" class="modal-frame">
                 <div class="modal-content">

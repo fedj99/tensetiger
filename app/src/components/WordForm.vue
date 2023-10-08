@@ -385,7 +385,12 @@ input[type="text"].active {
         background-color: var(--color-success);
         color: var(--color-success-contrast);
         .button-contrast {
-            @include button-style-outlined(var(--white), var(--color-success-contrast), 0.2, #fff6);
+            @include button-style-outlined-inv(
+                var(--white),
+                var(--color-success-contrast),
+                0.2,
+                #fff6
+            );
         }
     }
 
@@ -394,7 +399,12 @@ input[type="text"].active {
         color: var(--color-danger-contrast);
 
         .button-contrast {
-            @include button-style-outlined(var(--white), var(--color-danger-contrast), 0.2, #fff6);
+            @include button-style-outlined-inv(
+                var(--white),
+                var(--color-danger-contrast),
+                0.2,
+                #fff6
+            );
         }
 
         .heading {

@@ -129,6 +129,10 @@ h6 {
     color: var(--color-danger);
 }
 
+.color-secondary {
+    color: var(--color-accent-secondary);
+}
+
 /* FORMS */
 
 @mixin button-style($color-rgb, $color-contrast, $bg-alpha: 1) {
@@ -138,10 +142,22 @@ h6 {
     box-shadow: 0 0 0.7em rgba($color-rgb, 0.5);
 }
 
-@mixin button-style-outlined($color-rgb, $color-contrast, $bg-alpha: 1, $outline-color: #0005) {
+@mixin button-style-outlined-inv($color-rgb, $color-contrast, $bg-alpha: 1, $outline-color: #0005) {
     @include button-style($color-rgb, $color-contrast, $bg-alpha);
     border: var(--border-width) solid $outline-color;
     box-shadow: none;
+}
+
+@mixin button-style-outlined($color-rgb, $color-contrast) {
+    @include button-style($color-rgb, $color-contrast, 0);
+    border: var(--border-width) solid rgba($color-rgb, 1);
+    color: rgba($color-rgb, 1);
+    box-shadow: none;
+
+    &:hover {
+        background-color: rgba($color-rgb, 0.1);
+        filter: none;
+    }
 }
 
 input[type="submit"],
@@ -160,13 +176,22 @@ button,
         box-shadow 200ms;
 
     @include button-style(var(--color-accent-primary-rgb), var(--color-contrast-primary));
+    &.outlined {
+        @include button-style-outlined(var(--color-accent-primary-rgb), var(--color-contrast-primary));
+    }
 
     &.danger {
         @include button-style(var(--color-danger-rgb), var(--color-danger-contrast));
+        &.outlined {
+            @include button-style-outlined(var(--color-danger-rgb), var(--color-danger-contrast));
+        }
     }
 
     &.success {
         @include button-style(var(--color-success-rgb), var(--color-success-contrast));
+        &.outlined {
+            @include button-style-outlined(var(--color-success-rgb), var(--color-success-contrast));
+        }
     }
 
     &:focus {

@@ -19,7 +19,10 @@ const api = axios.create({
 });
 
 export function login(username: string) {
-    return api.post("/login", { username });
+    return api.post<{
+        success: boolean;
+        user: User;
+    }>("/login", { username });
 }
 
 export function getUser(id: number) {

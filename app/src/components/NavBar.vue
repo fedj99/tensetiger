@@ -99,7 +99,7 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
 
     .mobile-toggle-button {
         --color: 0, 0, 0;
-        @include button-style-outlined(var(--color), var(--color-text), 0, #0003);
+        @include button-style-outlined-inv(var(--color), var(--color-text), 0, #0003);
         padding: var(--padding-sm);
         line-height: 1;
     }
