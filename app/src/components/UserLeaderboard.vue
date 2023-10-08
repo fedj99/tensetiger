@@ -12,12 +12,23 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const scoresReversed = computed(() => {
+    const copy = [...props.scores];
+    copy.reverse();
+    return copy;
+});
+
 const chartData = computed(() => {
     const config: ChartData<"scatter", number[]> = {
-        labels: props.scores.map((x) => DateTime.fromRFC2822(x.date).toFormat("d. MMM T")),
+        labels: scoresReversed.value.map((x) =>
+            DateTime.fromRFC2822(x.date, { setZone: true }).toLocaleString({
+                dateStyle: "short",
+                timeStyle: "short",
+            })
+        ),
         datasets: [
             {
-                data: props.scores.map((x) => x.score),
+                data: scoresReversed.value.map((x) => x.score),
                 label: "Your score",
                 fill: "origin",
                 showLine: true,
@@ -50,11 +61,11 @@ function getCSSVariable(name: string) {
 
 <template>
     <Scatter
+        v-if="scores.length > 0"
         id="personal-performance-graph"
         :data="chartData"
         :options="chartOptions"
         :style="chartStyles"
-        v-if="scores.length > 0"
     ></Scatter>
     <div v-else>No scores yet</div>
 </template>

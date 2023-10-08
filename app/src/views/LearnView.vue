@@ -169,7 +169,7 @@ async function endRound() {
         // Then go to leaderboards with score ID, where all results are fetched
         router.push({
             name: "leaderboard",
-            query: { user: userName.value, score_id: res.data.score_id.toString() },
+            query: { user_id: userId.value, score_id: res.data.score_id.toString() },
         });
     } catch (e: any) {
         error.value = e;
