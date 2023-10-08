@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import "@/chartjs";
-import type { Score } from "@/game";
+import type { Score } from "@/rules";
 import { type ChartData, type ChartOptions } from "chart.js";
 import { DateTime } from "luxon";
 import { computed, ref, type CSSProperties } from "vue";

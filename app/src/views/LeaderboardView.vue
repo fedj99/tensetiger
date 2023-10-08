@@ -6,7 +6,7 @@ import GlobalLeaderboard from "@/components/GlobalLeaderboard.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import UserLeaderboard from "@/components/UserLeaderboard.vue";
 import UserResults from "@/components/UserResults.vue";
-import type { Score } from "@/game";
+import type { Score } from "@/rules";
 import { useGameStore } from "@/stores/game";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";

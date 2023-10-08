@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { type GameConfig, type Result } from "@/game";
+import { type GameConfig, type Result } from "@/rules";
+import { useGameStore } from "@/stores/game";
 import {
     emptyAnswer,
     wordFormKeys,
@@ -28,8 +29,9 @@ const emit = defineEmits<{
 
 defineExpose({ focusFirst });
 
+const gameStore = useGameStore();
+
 const editableWords = ref<Answer>(emptyAnswer());
-const hintRevealed = ref<boolean>(false);
 const submitDisabled = ref<boolean>(false);
 
 const inputFields = ref<HTMLInputElement[]>([]);
@@ -37,7 +39,7 @@ const nextButton = ref<HTMLButtonElement>();
 const revealHintModal = ref<InstanceType<typeof Modal>>();
 
 const hintStyle = computed(() => {
-    if (hintRevealed.value) {
+    if (gameStore.hintRevealed) {
         return {};
     } else {
         return {
@@ -51,7 +53,6 @@ watch(
     [() => props.word, () => props.shownKey],
     ([word, shownKey]) => {
         // Reset some buttons
-        hintRevealed.value = false;
         submitDisabled.value = false;
         // Reset field contents
         if (!word) {
@@ -80,7 +81,7 @@ function submit() {
 }
 
 function revealHint() {
-    hintRevealed.value = true;
+    gameStore.hintRevealed = true;
     emit("revealHint");
 }
 
@@ -112,7 +113,7 @@ function focusFirst() {
             <div class="control-group">
                 <input
                     id="translation"
-                    :value="hintRevealed ? word.translation : 'Translation'"
+                    :value="gameStore.hintRevealed ? word.translation : 'Translation'"
                     readonly
                     type="text"
                     autocomplete="off"
@@ -122,7 +123,7 @@ function focusFirst() {
                 />
                 <div class="controls">
                     <button
-                        v-if="!hintRevealed"
+                        v-if="!gameStore.hintRevealed"
                         type="button"
                         class="button-small danger"
                         @click="revealHintModal?.open()"

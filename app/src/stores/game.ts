@@ -1,14 +1,20 @@
 import { getGameConfig, getWordList } from "@/api";
-import { defaultGameConfig, type GameConfig, type Result } from "@/game";
+import { defaultGameConfig, type GameConfig, type Result } from "@/rules";
 import { wordFormKeys, type Word, type WordFormKey } from "@/words";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
-export const LS_WORDS_KEY = "words";
-export const LS_WORD_COUNT_KEY = "word-count";
-export const LS_WORD_PROGRESS_KEY = "word-progress";
-export const LS_SCORE_KEY = "score";
-export const LS_SHOWN_KEY = "shown-key";
+export const LS_GAME_STATE_KEY = "game-state";
+
+export interface GameState {
+    words: Word[];
+    wordCount: number;
+    progress: number;
+    score: number;
+    streak: number;
+    shownKey: string;
+    hintRevealed: boolean;
+}
 
 export const useGameStore = defineStore("game", () => {
     const _config = ref<GameConfig>();
@@ -18,6 +24,7 @@ export const useGameStore = defineStore("game", () => {
     const words = ref<Word[]>([]);
     const currentWord = computed(() => words.value[Math.min(progress.value, wordCount.value - 1)]); // Never go over boundaries
     const shownKey = ref<WordFormKey>("form_infinitive");
+    const hintRevealed = ref<boolean>(false);
     const streak = ref<number>(0);
     const currentStreakBonus = computed(() =>
         Math.max(
@@ -31,24 +38,50 @@ export const useGameStore = defineStore("game", () => {
         return _config.value || defaultGameConfig;
     });
 
-    function next(shownKey_: WordFormKey | undefined = undefined) {
+    // Set up a watcher function to save the state when it changes
+    watch([words, wordCount, progress, score, streak, shownKey, hintRevealed], () => saveState());
+
+    function next() {
         progress.value++;
-        if (shownKey_) shownKey.value = shownKey_;
-        else shownKey.value = wordFormKeys[Math.floor(Math.random() * wordFormKeys.length)];
+        shownKey.value = wordFormKeys[Math.floor(Math.random() * wordFormKeys.length)];
+        hintRevealed.value = false;
     }
 
-    async function clearCache() {
+    function clearCache() {
         console.log("Clearing cached game...");
         // Clear the cache
-        for (const key of [
-            LS_SCORE_KEY,
-            LS_SHOWN_KEY,
-            LS_WORDS_KEY,
-            LS_WORD_COUNT_KEY,
-            LS_WORD_PROGRESS_KEY,
-        ]) {
-            localStorage.removeItem(key);
-        }
+        localStorage.removeItem(LS_GAME_STATE_KEY);
+    }
+
+    function saveState() {
+        const state: GameState = {
+            words: words.value,
+            wordCount: wordCount.value,
+            progress: progress.value,
+            score: score.value,
+            streak: streak.value,
+            shownKey: shownKey.value,
+            hintRevealed: hintRevealed.value,
+        };
+        console.log("Saving game state...", state);
+        localStorage.setItem(LS_GAME_STATE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+        const cacheItem = localStorage.getItem(LS_GAME_STATE_KEY);
+        if (!cacheItem) return false;
+
+        const state = JSON.parse(cacheItem);
+        console.log("Loading game state:", state);
+
+        words.value = state.words;
+        wordCount.value = state.wordCount;
+        progress.value = state.progress;
+        score.value = state.score;
+        streak.value = state.streak;
+        shownKey.value = state.shownKey;
+        hintRevealed.value = state.hintRevealed;
+        return true;
     }
 
     async function reset() {
@@ -64,21 +97,8 @@ export const useGameStore = defineStore("game", () => {
         next();
     }
 
-    function resume(
-        words_: Word[],
-        wordCount_: number,
-        progress_: number,
-        score_: number,
-        shownKey_: WordFormKey
-    ) {
-        // Simply resume round
-        words.value = words_;
-        wordCount.value = wordCount_;
-        progress.value = progress_ - 1;
-        score.value = score_;
-        shownKey.value = shownKey_;
-        // Set random shown value
-        next(shownKey_);
+    function resume() {
+        // Really nothing to do here, loadState() already performs every necessary action
     }
 
     function addPoints(result: Result) {
@@ -121,6 +141,7 @@ export const useGameStore = defineStore("game", () => {
         words,
         currentWord,
         shownKey,
+        hintRevealed,
         streak,
         currentStreakBonus,
         next,
@@ -131,5 +152,7 @@ export const useGameStore = defineStore("game", () => {
         deductPoints,
         fetchGameConfig,
         finish,
+        loadState,
+        saveState,
     };
 });

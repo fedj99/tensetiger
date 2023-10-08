@@ -9,15 +9,8 @@ import ProgressBar from "@/components/ProgressBar.vue";
 import Score from "@/components/Score.vue";
 import StreakWidget from "@/components/StreakWidget.vue";
 import WordForm from "@/components/WordForm.vue";
-import { getResult, type Result } from "@/game";
-import {
-    LS_SCORE_KEY,
-    LS_SHOWN_KEY,
-    LS_WORD_COUNT_KEY,
-    LS_WORD_PROGRESS_KEY,
-    LS_WORDS_KEY,
-    useGameStore,
-} from "@/stores/game";
+import { getResult, type Result } from "@/rules";
+import { useGameStore } from "@/stores/game";
 import { type Answer, type Word, type WordFormKey } from "@/words";
 import { nextTick, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -39,19 +32,6 @@ const wordFormRef = ref<InstanceType<typeof WordForm> | null>(null);
 // Watch when route changes, then get a new (or cached word list)
 watch([() => route.params], () => startRound(), { immediate: true });
 
-// Watch parameters and persist to resume later
-watch(
-    [
-        () => gameStore.words,
-        () => gameStore.wordCount,
-        () => gameStore.progress,
-        () => gameStore.score,
-        () => gameStore.shownKey,
-    ],
-    ([words, wordCount, progress, score, shownKey]) =>
-        saveProgress(words, wordCount, progress, score, shownKey)
-);
-
 // Get current logged in user
 onMounted(() => {
     const { cookies } = useCookies();
@@ -71,29 +51,19 @@ async function openNewRound() {
     // Watchers automatically save value
 }
 
-async function resumeFromCache(
-    words: string,
-    wordCount: string,
-    progress: string,
-    score: string,
-    shownKey: string
-) {
-    console.log("Resuming game from cache, fetching game config", progress, wordCount, score);
+async function resumeFromCache() {
+    console.log("Resuming game from cache, fetching game config");
     loading.value = true;
-    const _wordCount = parseInt(wordCount);
-    const _progress = parseInt(progress);
-    const _words = JSON.parse(words);
-    const _score = parseInt(score);
-    const _shownKey = shownKey as WordFormKey;
 
     // Load game config
     await gameStore.fetchGameConfig();
 
     // Resume game (needs to be done in any case to set state variables)
-    gameStore.resume(_words, _wordCount, _progress, _score, _shownKey);
+    gameStore.resume();
     // If already done, finish this round (and post the score)
-    if (_progress >= _wordCount) {
+    if (gameStore.progress >= gameStore.wordCount) {
         // Game was already over (?)
+        console.warn("Inconsistent state, loaded finished game from cache");
         endRound();
     }
 }
@@ -104,21 +74,11 @@ async function startRound() {
 
     try {
         // Check local storage first
-        const cachedWords = localStorage.getItem(LS_WORDS_KEY);
-        const cachedWordCount = localStorage.getItem(LS_WORD_COUNT_KEY);
-        const cachedProgress = localStorage.getItem(LS_WORD_PROGRESS_KEY);
-        const cachedPoints = localStorage.getItem(LS_SCORE_KEY);
-        const cachedShownKey = localStorage.getItem(LS_SHOWN_KEY);
+        const loaded = gameStore.loadState();
 
         // Load from local storage
-        if (cachedWords && cachedWordCount && cachedProgress && cachedPoints && cachedShownKey) {
-            await resumeFromCache(
-                cachedWords,
-                cachedWordCount,
-                cachedProgress,
-                cachedPoints,
-                cachedShownKey
-            );
+        if (loaded) {
+            await resumeFromCache();
         } else {
             // Not cached, start a new round
             await openNewRound();
@@ -138,21 +98,6 @@ async function startRound() {
     } finally {
         loading.value = false;
     }
-}
-
-function saveProgress(
-    words: Word[],
-    wordCount: number,
-    progress: number,
-    score: number,
-    shownKey: WordFormKey
-) {
-    console.log("Saving progress");
-    localStorage.setItem(LS_WORDS_KEY, JSON.stringify(words));
-    localStorage.setItem(LS_WORD_COUNT_KEY, wordCount.toString());
-    localStorage.setItem(LS_WORD_PROGRESS_KEY, progress.toString());
-    localStorage.setItem(LS_SCORE_KEY, score.toString());
-    localStorage.setItem(LS_SHOWN_KEY, shownKey);
 }
 
 async function endRound() {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { type GameConfig, type Score } from "./game";
+import { type GameConfig, type Score } from "./rules";
 import type { Word } from "./words";
 
 interface User {

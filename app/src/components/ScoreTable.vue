@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Score } from "@/game";
+import type { Score } from "@/rules";
 
 interface Props {
     scores: Score[];

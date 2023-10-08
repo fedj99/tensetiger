@@ -13,7 +13,7 @@
 - [x] Remove duplicated solutions from mistake screen
 - [ ] Password authentication
 - [x] Display badge on 2x and 3x points words
-- [ ] Clean up game state management
+- [x] Clean up game state management
 - [x] Streaks
 - [x] Fix mobile leaderboards with long username
 - [x] Import word list
@@ -23,4 +23,4 @@
 - [x] Only show streak from first checkpoint
 - [x] Correct order for performance graph
 - [x] Improve mobile hint layout (lots of accidental clicks)
-- [ ] Load shown hint from cache
+- [x] Load shown hint from cache
