@@ -38,6 +38,10 @@ def setup_routes(app: Flask):
     def index():
         return jsonify(app.config["APP_NAME"])
 
+    @app.get("/api/users/<int:id>")
+    def get_user(id: int):
+        return jsonify(db.find_by_id(db.T_USERS, id))
+
     @app.get("/api/scores")
     def scores():
         return jsonify(db.get_all(db.T_SCORES))

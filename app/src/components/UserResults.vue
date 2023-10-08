@@ -3,7 +3,7 @@ import type { Score } from "@/game";
 import { computed } from "vue";
 
 interface Props {
-    score: Score;
+    score?: Score;
     personalHighScore: Score;
     globalHighScore: Score;
     username: string;
@@ -12,10 +12,12 @@ interface Props {
 const props = defineProps<Props>();
 
 const greeting = computed(() => {
+    if (!props.score) return "";
     if (props.score.score > 0) return "Good job";
     else return "Better luck next time";
 });
 const ending = computed(() => {
+    if (!props.score) return "";
     if (props.score.score > 0) return "Impressive!";
     else return "You can do better than this...";
 });
@@ -23,32 +25,47 @@ const ending = computed(() => {
 
 <template>
     <div class="user-results">
-        <h1>
-            {{ greeting }}, <span class="username">{{ username }}</span
-            >!
-        </h1>
-        <p>You scored</p>
-        <h1 class="score">{{ score?.score }}</h1>
-        <p>points. {{ ending }}</p>
+        <div v-if="score" class="game-score">
+            <h1>
+                {{ greeting }}, <span class="username">{{ username }}</span
+                >!
+            </h1>
+            <p>You scored</p>
+            <h1 class="score">{{ score?.score }}</h1>
+            <p>points. {{ ending }}</p>
+            <hr />
 
-        <hr />
-
-        <p v-if="score.score == personalHighScore.score && score.date == personalHighScore.date">
-            <template
+            <p
                 v-if="
-                    score.score == globalHighScore.score &&
-                    score.user_id == globalHighScore.user_id &&
-                    score.date == globalHighScore.date
+                    score.score == personalHighScore.score && score.date == personalHighScore.date
                 "
             >
-                🎉🎉🎉 <strong>NEW HIGH SCORE!!!</strong> 🎉🎉🎉
-            </template>
-            <template v-else> 🎉 <strong>New personal record!</strong> 🎉 </template>
-        </p>
-        <p v-else>
-            Previous personal record:
-            <strong class="highscore">{{ personalHighScore?.score || "Loading..." }}</strong>
-        </p>
+                <template
+                    v-if="
+                        score.score == globalHighScore.score &&
+                        score.user_id == globalHighScore.user_id &&
+                        score.date == globalHighScore.date
+                    "
+                >
+                    🎉🎉🎉 <strong>NEW HIGH SCORE!!!</strong> 🎉🎉🎉
+                </template>
+                <template v-else> 🎉 <strong>New personal record!</strong> 🎉 </template>
+            </p>
+            <p v-else>
+                Previous personal record:
+                <strong class="highscore">{{ personalHighScore?.score }}</strong>
+            </p>
+        </div>
+        <div v-else class="personal-score">
+            <h1>
+                Scores for <span class="username">{{ username }}</span>
+            </h1>
+
+            <p>
+                Your personal record:
+                <strong class="highscore">{{ personalHighScore.score }}</strong>
+            </p>
+        </div>
     </div>
 </template>
 

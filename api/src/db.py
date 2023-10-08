@@ -108,7 +108,7 @@ def find_by(table: str, column: str, value: Any, operator: str = "=", single: bo
         return cur.fetchall()
 
 
-def find_by_id(table: str, id: str):
+def find_by_id(table: str, id: Any):
     return find_by(table, "id", id, single=True)
 
 

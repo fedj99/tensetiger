@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getHighscore, getLatestScores, getScore, getTopKScores } from "@/api";
+import { getHighscore, getLatestScores, getScore, getTopKScores, getUser } from "@/api";
 import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import GlobalLeaderboard from "@/components/GlobalLeaderboard.vue";
@@ -10,6 +10,7 @@ import type { Score } from "@/game";
 import { useGameStore } from "@/stores/game";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useCookies } from "vue3-cookies";
 
 const LATEST_K = 10;
 const TOP_K = 10;
@@ -17,11 +18,12 @@ const TOP_K = 10;
 const route = useRoute();
 const router = useRouter();
 const gameStore = useGameStore();
+const { cookies } = useCookies();
 
 const loading = ref(true);
 const error = ref();
 
-const username = ref<string>(route.query.user as string);
+const username = ref<string>(route.query.username as string);
 const score = ref<Score>();
 const topKScores = ref<Score[]>();
 const latestScores = ref<Score[]>();
@@ -30,7 +32,9 @@ const globalHighScore = ref<Score>();
 
 const scoreId = computed(() => parseInt(route.query.score_id as string));
 
-const scoreIdProvided = computed(() => route.query.user != undefined);
+const scoreIdProvided = computed(() => route.query.score_id != undefined);
+const queryUserId = computed(() => route.query.user_id);
+const queryUserName = computed(() => route.query.username);
 
 onMounted(fetchScores);
 
@@ -50,23 +54,38 @@ async function fetchScores() {
             })
         );
 
-        // If score ID provided, fetch user-specific data
+        // If score_id is passed as query parameters, we fetch the score and set the user_id
+        // Otherwise, check query parameters for user id
+        // Finally, try to get user from cookies
+        const loggedInUserId = cookies.get("user_id");
+        const loggedInUsername = cookies.get("username");
+        let userId: number | undefined = undefined;
+
         if (scoreIdProvided.value) {
-            // Gets the score referred to by score_id
-            const getScorePromise = getScore(scoreId.value).then((x) => (score.value = x.data));
-            promises.push(getScorePromise);
+            const gameScore = await getScore(scoreId.value).then((x) => x.data);
+            userId = gameScore.user_id;
+            score.value = gameScore;
+            username.value = gameScore.username;
+        } else if (queryUserId.value) {
+            userId = parseInt(queryUserId.value as string);
+            if (!queryUserName.value) {
+                username.value = await getUser(userId).then((x) => x.data.username);
+            } else {
+                username.value = queryUserName.value as string;
+            }
+        } else if (loggedInUserId) {
+            userId = parseInt(loggedInUserId);
+            username.value = loggedInUsername;
+        }
+
+        // If userId was determined, show personal information
+        if (userId) {
             // Get personal latest scores
             promises.push(
-                getScorePromise
-                    .then((score) => getLatestScores(score.user_id, LATEST_K))
-                    .then((x) => (latestScores.value = x.data))
+                getLatestScores(userId, LATEST_K).then((res) => (latestScores.value = res.data))
             );
             // Get personal high score
-            promises.push(
-                getScorePromise
-                    .then((score) => getHighscore(score.user_id))
-                    .then((x) => (personalHighScore.value = x.data))
-            );
+            promises.push(getHighscore(userId).then((res) => (personalHighScore.value = res.data)));
         }
 
         // Wait for all results
@@ -95,7 +114,7 @@ async function resetGame() {
         </main>
         <main v-else class="leaderboard">
             <UserResults
-                v-if="score && personalHighScore && globalHighScore"
+                v-if="personalHighScore && globalHighScore"
                 :score="score"
                 :personal-high-score="personalHighScore"
                 :global-high-score="globalHighScore"
@@ -107,7 +126,7 @@ async function resetGame() {
             <hr />
 
             <div class="tables">
-                <template v-if="scoreIdProvided">
+                <template v-if="latestScores">
                     <h2>Your latest scores</h2>
                     <UserLeaderboard v-if="latestScores" :scores="latestScores"></UserLeaderboard>
                 </template>

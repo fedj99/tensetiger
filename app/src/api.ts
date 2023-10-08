@@ -2,6 +2,12 @@ import axios from "axios";
 import { type GameConfig, type Score } from "./game";
 import type { Word } from "./words";
 
+interface User {
+    id: number;
+    username: string;
+    last_logon: string;
+}
+
 if (!import.meta.env.VITE_API_URL || import.meta.env.VITE_API_URL == "")
     throw "Please specify VITE_API_URL environment variable";
 
@@ -14,6 +20,10 @@ const api = axios.create({
 
 export function login(username: string) {
     return api.post("/login", { username });
+}
+
+export function getUser(id: number) {
+    return api.get<User>(`/users/${id}`);
 }
 
 export function getWordList() {
