@@ -1,4 +1,6 @@
-from flask import Blueprint, current_app, jsonify
+from flask import Blueprint, current_app, g, jsonify, session
+
+from api import db
 
 from . import auth, game, scores, users, words
 
@@ -14,3 +16,12 @@ bp.register_blueprint(game.bp)
 @bp.get("/")
 def get_index():
     return jsonify(current_app.config["APP_NAME"])
+
+
+@bp.before_request
+def load_user():
+    if "user_id" in session:
+        user = db.find_by_id(db.T_USERS, session["user_id"])
+        g.user = user
+    else:
+        g.user = None

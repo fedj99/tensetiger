@@ -1,7 +1,8 @@
 from datetime import datetime
+from functools import wraps
 from urllib.parse import quote
 
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, g, jsonify, request, session
 from psycopg2 import IntegrityError, sql
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -10,21 +11,31 @@ from api import db
 bp = Blueprint("auth", __name__)
 
 
+def require_login(route):
+    @wraps(route)
+    def decorator(*args, **kwargs):
+        if g.user is None:
+            return jsonify("Authorization required"), 401
+        return route(*args, **kwargs)
+
+    return decorator
+
+
 @bp.post("/register")
 def register():
-    username = request.json["username"]
-    password = request.json["password"]
+    username = request.json.get("username")
+    password = request.json.get("password")
 
     if not username:
-        return "Username not provided", 400
+        return jsonify("Username not provided"), 400
     if not password:
-        return "Password not provided", 400
+        return jsonify("Password not provided"), 400
 
     with db.cursor() as cur:
         try:
             query = sql.SQL(
-                "INSERT INTO {table} (username, password) VALUES (%s, %s) RETURNING id"
-            ).format(table=db.T_USERS)
+                'INSERT INTO {table} (username, "password") VALUES (%s, %s) RETURNING id'
+            ).format(table=sql.Identifier(db.T_USERS))
             cur.execute(query, (username, generate_password_hash(password)))
             user_id = cur.fetchone()["id"]
             db.commit()
@@ -39,20 +50,20 @@ def register():
 
 @bp.post("/login")
 def login():
-    username = request.json["username"]
-    password = request.json["password"]
+    username = request.json.get("username")
+    password = request.json.get("password")
 
     if not username:
-        return "Username not provided", 400
+        return jsonify("Username not provided"), 400
     if not password:
-        return "Password not provided", 400
+        return jsonify("Password not provided"), 400
 
     user = db.find_by(db.T_USERS, "username", username, single=True)
     if user is None:
-        return f'No such user: "{username}"'
+        return jsonify(f'No such user: "{username}"'), 401
 
     elif not check_password_hash(user["password"], password):
-        return "Incorrect password"
+        return jsonify("Incorrect password"), 401
 
     db.update(db.T_USERS, user["id"], {"last_logon": datetime.now().isoformat()})
     session.clear()
@@ -60,3 +71,15 @@ def login():
     session["username"] = user["username"]
 
     return jsonify({"success": True, "user": user})
+
+
+@bp.post("/logout")
+def logout():
+    session.clear()
+    return {"success": True}
+
+
+@bp.get("/example-authenticated-route")
+@require_login
+def example_authenticated_route():
+    return jsonify("Cool stuff")

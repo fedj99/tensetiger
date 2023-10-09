@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 
 from api import db
+from api.blueprints.api.auth import require_login
 
 bp = Blueprint("scores", __name__)
 
@@ -11,6 +12,7 @@ def scores():
 
 
 @bp.post("/scores")
+@require_login
 def post_score():
     score_id = db.create(db.T_SCORES, request.json)
     response = jsonify({"score_id": score_id})
