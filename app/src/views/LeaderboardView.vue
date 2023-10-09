@@ -113,7 +113,8 @@ async function fetchScores() {
                 :score="score"
                 :personal-high-score="personalHighScore"
                 :global-high-score="globalHighScore"
-                :username="username"></UserResults>
+                :username="username"
+            ></UserResults>
 
             <h1 v-else>General Leaderboard</h1>
 

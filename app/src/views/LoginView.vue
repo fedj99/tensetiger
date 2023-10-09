@@ -79,7 +79,8 @@ function logout() {
                     style="flex: 1"
                     type="text"
                     placeholder="Enter a username..."
-                    maxlength="32" />
+                    maxlength="32"
+                />
                 <button type="submit" class="input-huge">
                     <i class="ri-login-box-line"></i> Log in
                 </button>
@@ -98,7 +99,8 @@ function logout() {
 
                     <RouterLink
                         :to="{ name: 'leaderboard' }"
-                        class="link-leaderboard button outlined">
+                        class="link-leaderboard button outlined"
+                    >
                         <i class="ri-vip-crown-fill"></i> See Leaderboard
                     </RouterLink>
 
