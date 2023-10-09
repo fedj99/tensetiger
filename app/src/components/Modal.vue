@@ -87,16 +87,14 @@ defineExpose({ toggle, open, close });
             class="animate__animated"
             style="animation-duration: 200ms"
             enter-active-class="animate__fadeIn"
-            leave-active-class="animate__fadeOut"
-        >
+            leave-active-class="animate__fadeOut">
             <div v-if="isOpen" class="modal-background"></div>
         </Transition>
         <Transition
             class="animate__animated"
             style="animation-duration: 200ms"
             enter-active-class="animate__zoomIn"
-            leave-active-class="animate__zoomOut"
-        >
+            leave-active-class="animate__zoomOut">
             <div v-if="isOpen" class="modal-frame">
                 <div class="modal-content">
                     <slot></slot>
@@ -106,8 +104,7 @@ defineExpose({ toggle, open, close });
                         v-for="(btn, idx) of fullButtons"
                         :key="idx"
                         :class="btn.class"
-                        @click="handleButtonClicked(btn)"
-                    >
+                        @click="handleButtonClicked(btn)">
                         {{ btn.text }}
                     </button>
                 </div>
@@ -141,9 +138,9 @@ defineExpose({ toggle, open, close });
     z-index: 101;
     background-color: var(--color-background);
     border-radius: var(--br);
-    border: var(--border-width) solid #0003;
+    border: var(--border-width) solid rgba(var(--color-text-rgb), 0.1);
     padding: var(--padding-lg);
-    box-shadow: 0 0 30px #0007;
+    box-shadow: 0 0 30px var(--color-shadow);
 }
 
 .modal-buttons {

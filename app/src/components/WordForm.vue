@@ -104,8 +104,7 @@ function focusFirst() {
                 class="input-huge"
                 type="text"
                 :name="key"
-                :class="{ active: shownKey != key }"
-            />
+                :class="{ active: shownKey != key }" />
         </div>
 
         <div class="verb-form translation">
@@ -119,15 +118,13 @@ function focusFirst() {
                     autocomplete="off"
                     name="translation"
                     :style="hintStyle"
-                    tabindex="-1"
-                />
+                    tabindex="-1" />
                 <div class="controls">
                     <button
                         v-if="!gameStore.hintRevealed"
                         type="button"
                         class="button-small danger"
-                        @click="revealHintModal?.open()"
-                    >
+                        @click="revealHintModal?.open()">
                         Reveal
                     </button>
                 </div>
@@ -140,8 +137,7 @@ function focusFirst() {
             <div
                 v-if="result"
                 class="result-overlay"
-                :class="result.hasMistakes ? 'wrong' : 'correct'"
-            >
+                :class="result.hasMistakes ? 'wrong' : 'correct'">
                 <template v-if="result.hasMistakes">
                     <div class="toprow">
                         <h1 class="heading">Incorrect <i class="ri-ghost-line"></i></h1>
@@ -159,16 +155,14 @@ function focusFirst() {
                                     class="wrong"
                                     tabindex="-1"
                                     autocapitalize="off"
-                                    autocorrect="off"
-                                />
+                                    autocorrect="off" />
                                 <input
                                     type="text"
                                     readonly
                                     :value="mistake.expected"
                                     tabindex="-1"
                                     autocapitalize="off"
-                                    autocorrect="off"
-                                />
+                                    autocorrect="off" />
                             </template>
                             <template v-else>
                                 <input
@@ -178,16 +172,14 @@ function focusFirst() {
                                     class="correct"
                                     tabindex="-1"
                                     autocapitalize="off"
-                                    autocorrect="off"
-                                />
+                                    autocorrect="off" />
                                 <input
                                     type="text"
                                     readonly
                                     :value="result.word[key]"
                                     tabindex="-1"
                                     autocapitalize="off"
-                                    autocorrect="off"
-                                />
+                                    autocorrect="off" />
                             </template>
                         </template>
                     </div>
@@ -199,15 +191,13 @@ function focusFirst() {
                         {{ result.word.form_infinitive }} / {{ result.word.form_simple_past }} /
                         {{ result.word.form_past_participle }}
                     </p>
-                    <p>All your answers were correct. Good job!</p>
                 </template>
                 <span class="spacer"></span>
                 <button
                     ref="nextButton"
                     type="button"
                     class="button-contrast"
-                    @click="$emit('next')"
-                >
+                    @click="$emit('next')">
                     Next <kbd><i class="ri-corner-down-left-fill"></i></kbd>
                 </button>
             </div>
@@ -217,8 +207,7 @@ function focusFirst() {
             <Transition
                 class="animate__animated animate__fast"
                 enter-active-class="animate__bounceIn"
-                leave-active-class="animate__bounceOut"
-            >
+                leave-active-class="animate__bounceOut">
                 <div v-if="!result && word?.difficulty != 1" class="bonus-points-badge">
                     <strong>{{ word?.difficulty }}&times;</strong> points!
                 </div>
@@ -242,8 +231,8 @@ function focusFirst() {
 .bonus-points {
     position: absolute;
     top: -8pt;
-    left: -8pt;
-    right: -8pt;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: flex-end;
 

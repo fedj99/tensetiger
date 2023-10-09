@@ -23,6 +23,10 @@
     text-align: center;
 }
 
+.center-content {
+    width: 100%;
+}
+
 @media screen and (max-width: $bp-mobile) {
     .center-container {
         align-items: flex-start !important;

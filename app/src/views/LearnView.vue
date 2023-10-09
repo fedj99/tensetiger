@@ -222,7 +222,9 @@ function onHintRevealed() {
 @import "@/assets/base.scss";
 
 .main {
-    width: min(90vw, 50em);
+    width: min(100%, 50em);
+    margin: auto;
+    padding: var(--padding-lg);
 }
 
 .par {
@@ -237,6 +239,10 @@ function onHintRevealed() {
     &:is(ul) li {
         padding-left: 0.5em;
     }
+}
+
+[data-theme="dark"] .rules {
+    list-style: "👉🏻";
 }
 
 .player {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import ThemeSwitcher from "./ThemeSwitcher.vue";
 
 const navbarShown = ref<boolean>(false);
 const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "mobile-hidden"));
@@ -34,6 +35,10 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
                 >
             </li>
         </ul>
+
+        <div class="theme-switcher">
+            <ThemeSwitcher></ThemeSwitcher>
+        </div>
     </nav>
 </template>
 
@@ -41,20 +46,27 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
 @import "@/assets/base.scss";
 @import "@/assets/main.scss";
 
+.navbar {
+    display: flex;
+    align-items: center;
+}
+
 .navbar-items {
-    margin: 0;
     padding: 0;
-    list-style-type: none;
-    text-align: center;
     margin: var(--padding-lg);
+    list-style-type: none;
     display: flex;
     gap: var(--gap-lg);
-    justify-content: center;
     overflow: hidden;
+    flex: 1;
 
     transition:
         max-height 200ms,
         background-color 200ms;
+}
+
+.theme-switcher {
+    margin: var(--padding-lg);
 }
 
 .name {
