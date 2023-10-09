@@ -6,6 +6,7 @@ import psycopg2
 from flask import Flask, current_app, g
 from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
+from tabulate import tabulate
 
 T_SCORES = "scores"
 T_WORDS = "words"
@@ -52,6 +53,17 @@ def close(e=None):
 def init():
     db = get()
 
+    print(
+        tabulate(
+            [
+                ["Working Directory", os.getcwd()],
+                ["Application Root Path", current_app.root_path],
+                ["Migrations Directory", current_app.config["MIGRATIONS_DIR"]],
+            ],
+            tablefmt="psql",
+        )
+    )
+
     # Get file directories
     migrations_dir = current_app.config["MIGRATIONS_DIR"]
     schema_dir = os.path.join(migrations_dir, "schema")
@@ -59,6 +71,7 @@ def init():
 
     # Function to run all SQL files in a directory
     def run_all(base_dir):
+        paths = []
         if base_dir[0] != "/":
             base_dir = os.path.join(current_app.root_path, base_dir)
         for dirpath, _dirnames, filenames in os.walk(base_dir):
@@ -66,11 +79,20 @@ def init():
                 path = os.path.join(dirpath, fn)
                 if not path.endswith(".sql"):
                     continue
-                current_app.logger.info(f"Running migration: {path}")
-                with current_app.open_resource(path, "r") as f:
-                    with cursor() as cur:
-                        cur.execute(f.read())
-                    db.commit()
+                paths.append(path)
+
+        print("Found migrations:")
+        print(*paths, sep="\n")
+        ans = input("Continue? [y/N] ")
+        if not ans.lower().startswith("y"):
+            print("Aborting...")
+            return
+        for path in paths:
+            current_app.logger.info(f"Running migration: {path}")
+            with current_app.open_resource(path, "r") as f:
+                with cursor() as cur:
+                    cur.execute(f.read())
+                db.commit()
 
     # Create all schemas
     run_all(schema_dir)
@@ -98,7 +120,7 @@ def find_by(table: str, column: str, value: Any, operator: str = "=", single: bo
         if single:
             result = cur.fetchall()
             if cur.rowcount > 1:
-                raise Exception(
+                raise ValueError(
                     f"Requested single instance but found many in table `{table}`, looking for "
                     f"`{column}`{operator}{repr(value)}"
                 )

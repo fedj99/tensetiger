@@ -1,8 +1,6 @@
-from . import add_prefix
-
 APP_NAME = "b3-default"
-MIGRATIONS_DIR = add_prefix("migrations")
-FRONTEND_ROOT = add_prefix("frontend")
+MIGRATIONS_DIR = "migrations"
+FRONTEND_ROOT = "frontend"
 GAME_CONFIG = {
     "wordCount": 10,
     "incorrectAnswerPenalty": 1,

@@ -1,6 +1,6 @@
 -- public.users definition
 -- Drop table
-DROP TABLE public.users;
+DROP TABLE IF EXISTS public.users;
 CREATE TABLE public.users (
     id int4 NOT NULL GENERATED ALWAYS AS IDENTITY,
     username varchar NOT NULL,
