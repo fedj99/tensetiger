@@ -12,7 +12,7 @@ const darkModeEnabled = ref<boolean>(false);
 const theme = computed(() => (darkModeEnabled.value ? "dark" : "light"));
 
 // Change the theme on document body when theme changed
-watch(theme, (newTheme, oldTheme) => {
+watch(theme, (newTheme) => {
     document.documentElement.dataset["theme"] = newTheme;
 });
 

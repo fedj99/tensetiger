@@ -9,10 +9,8 @@ import Logo from "@/components/Logo.vue";
 import { useGameStore } from "@/stores/game";
 import type { AxiosError } from "axios";
 import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
 
-const router = useRouter();
 const cookies = useCookies().cookies;
 const gameStore = useGameStore();
 

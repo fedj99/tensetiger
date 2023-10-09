@@ -4,7 +4,7 @@ import Centered from "./Centered.vue";
 interface Props {
     center?: boolean;
 }
-const props = withDefaults(defineProps<Props>(), { center: false });
+withDefaults(defineProps<Props>(), { center: false });
 </script>
 
 <template>
