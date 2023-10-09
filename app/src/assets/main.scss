@@ -180,7 +180,10 @@ button,
 
     @include button-style(var(--color-accent-primary-rgb), var(--color-contrast-primary));
     &.outlined {
-        @include button-style-outlined(var(--color-accent-primary-rgb), var(--color-contrast-primary));
+        @include button-style-outlined(
+            var(--color-accent-primary-rgb),
+            var(--color-contrast-primary)
+        );
     }
 
     &.danger {

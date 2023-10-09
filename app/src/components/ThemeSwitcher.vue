@@ -78,7 +78,8 @@ onMounted(() => {
             v-model="darkModeEnabled"
             type="checkbox"
             name="theme-select"
-            @input="savePagePreference" />
+            @input="savePagePreference"
+        />
         <label for="theme-select" class="switcher-toggle" :class="theme">
             <span class="slider" :class="theme">
                 <i class="ri-sun-line light"></i>
