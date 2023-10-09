@@ -14,5 +14,9 @@
 		"pylint.importStrategy": "fromEnvironment",
 		"editor.linkedEditing": true,
 		"vue.inlayHints.inlineHandlerLeading": false,
+		"[python]": {
+			"editor.defaultFormatter": "ms-python.black-formatter"
+		},
+		"python.formatting.provider": "none",
 	}
 }

@@ -2,5 +2,8 @@
 	"files.exclude": {
 		"api/**": true,
 		"app/**": true
-	}
+	},
+	"editor.rulers": [
+		80
+	]
 }

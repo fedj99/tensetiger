@@ -1,7 +1,0 @@
-**/__pycache__
-app/node_modules/
-**/.env*.local
-**/.flaskenv.local
-
-# Vue build files in api directory for debugging purposes
-api/frontend/
