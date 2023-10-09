@@ -1,4 +1,4 @@
-from config.default import GAME_CONFIG
+from .default import GAME_CONFIG
 
 APP_NAME = "b3-dev"
 DB_HOST = "localhost"

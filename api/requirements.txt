@@ -6,3 +6,4 @@ rich
 psycopg2
 python-dotenv
 gunicorn
+tabulate
