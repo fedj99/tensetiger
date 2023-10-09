@@ -8,7 +8,7 @@
 - [x] Test weird usernames (spaces, emojis, etc.)
 - [x] Mobile optimization
 - [x] Performance graph
-- [ ] Dark mode
+- [x] Dark mode
 - [x] Correct order of solutions
 - [x] Remove duplicated solutions from mistake screen
 - [ ] Password authentication
@@ -24,4 +24,5 @@
 - [x] Correct order for performance graph
 - [x] Improve mobile hint layout (lots of accidental clicks)
 - [x] Load shown hint from cache
-- [ ] Change app title and favicon
+- [x] Change app title and favicon
+- [ ] Format entire project
