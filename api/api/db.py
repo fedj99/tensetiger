@@ -38,6 +38,11 @@ def cursor():
     return g.db_cursor
 
 
+def commit():
+    db = get()
+    db.commit()
+
+
 def close(e=None):
     db_cursor = g.pop("db_cursor", None)
     if db_cursor is not None:
