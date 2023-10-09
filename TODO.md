@@ -25,4 +25,4 @@
 - [x] Improve mobile hint layout (lots of accidental clicks)
 - [x] Load shown hint from cache
 - [x] Change app title and favicon
-- [ ] Format entire project
+- [x] Format entire project

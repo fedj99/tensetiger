@@ -96,8 +96,13 @@ onMounted(() => {
     visibility: hidden;
 }
 
+.switcher-frame {
+    display: inline-flex;
+    align-items: center;
+}
+
 .switcher-toggle {
-    --size: 20px;
+    --size: var(--font-size-regular);
     --pad: 3px;
 
     width: calc(2.25 * (var(--size) + 2 * var(--pad)));
@@ -120,6 +125,7 @@ onMounted(() => {
         color: var(--color-background);
         border-radius: 200px;
         transition: all 200ms;
+        text-align: left;
 
         i {
             position: absolute;

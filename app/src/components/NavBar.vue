@@ -18,6 +18,9 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
             <li class="li-name">
                 <span class="name">Bring Brang Brung</span>
             </li>
+            <li class="theme-switcher">
+                <ThemeSwitcher></ThemeSwitcher>
+            </li>
             <span class="sep">|</span>
             <li>
                 <RouterLink :to="{ name: 'home' }" @click="navbarShown = false"
@@ -35,10 +38,6 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
                 >
             </li>
         </ul>
-
-        <div class="theme-switcher">
-            <ThemeSwitcher></ThemeSwitcher>
-        </div>
     </nav>
 </template>
 
@@ -56,6 +55,7 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
     margin: var(--padding-lg);
     list-style-type: none;
     display: flex;
+    align-items: center;
     gap: var(--gap-lg);
     overflow: hidden;
     flex: 1;
@@ -66,7 +66,7 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
 }
 
 .theme-switcher {
-    margin: var(--padding-lg);
+    margin-left: auto;
 }
 
 .name {
@@ -90,10 +90,16 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
         max-height: 0;
     }
 
-    nav {
+    nav.navbar {
+        display: block;
+        text-align: center;
         transition:
             background-color 200ms,
             color 200ms;
+
+        .theme-switcher {
+            margin: 0;
+        }
     }
 
     nav.mobile-shown {
