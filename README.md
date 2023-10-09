@@ -73,6 +73,14 @@ config-specific values in `.env.[mode]`, where `[mode]` is the same as the
 `FLASK_ENV` you are using. Add `.local` (e.g. `.env.staging.local`) to ignore
 the file in git (good for database passwords etc.)
 
+Once you set up the database connection parameters (host, username, password),
+you can use `flask` to run some database migrations. The `init-db` command wipes
+and creates all necessary tables. Run:
+
+```sh
+flask init-db # WARNING: Will delete any tables with the same name
+```
+
 Then you can finally run the development server:
 
 ```sh
