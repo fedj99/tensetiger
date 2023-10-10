@@ -4,7 +4,7 @@ from typing import Any
 import click
 import psycopg2
 from flask import Flask, current_app, g
-from psycopg2 import sql
+from psycopg2 import OperationalError, sql
 from psycopg2.extras import RealDictCursor
 from tabulate import tabulate
 
@@ -19,12 +19,18 @@ def get():
     if "db" not in g or g.db.closed:
         # Create new connection
         conf = current_app.config
-        g.db = psycopg2.connect(
+        db_conf = dict(
             host=conf["DB_HOST"],
             database=conf["DB_DATABASE"],
             user=conf["DB_USER"],
             password=conf["DB_PASSWORD"],
         )
+        current_app.logger.info("Connecting to database with:", db_conf)
+        try:
+            g.db = psycopg2.connect(**db_conf)
+        except OperationalError as e:
+            current_app.logger.error("Failed to connect to database!")
+            current_app.logger.error(e)
 
     return g.db
 
