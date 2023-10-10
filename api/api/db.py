@@ -58,21 +58,23 @@ def close(e=None):
 def init():
     db = get()
 
+    # Get file directories
+    migrations_dir = os.path.realpath(
+        os.path.join(current_app.root_path, current_app.config["MIGRATIONS_DIR"])
+    )
+    schema_dir = os.path.join(migrations_dir, "schema")
+    data_dir = os.path.join(migrations_dir, "data")
+
     print(
         tabulate(
             [
                 ["Working Directory", os.getcwd()],
                 ["Application Root Path", current_app.root_path],
-                ["Migrations Directory", current_app.config["MIGRATIONS_DIR"]],
+                ["Migrations Directory", migrations_dir],
             ],
             tablefmt="psql",
         )
     )
-
-    # Get file directories
-    migrations_dir = current_app.config["MIGRATIONS_DIR"]
-    schema_dir = os.path.join(migrations_dir, "schema")
-    data_dir = os.path.join(migrations_dir, "data")
 
     # Function to run all SQL files in a directory
     def run_all(base_dir):

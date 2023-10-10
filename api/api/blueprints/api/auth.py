@@ -48,7 +48,7 @@ def register():
     # User created, return to client
     user = db.find_by_id(db.T_USERS, user_id)
 
-    return jsonify(user)
+    return jsonify({"success": True, "user": user, "login_type": "new_user"})
 
 
 @bp.post("/login")

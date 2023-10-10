@@ -1,6 +1,6 @@
 APP_NAME = "b3-default"
-MIGRATIONS_DIR = "migrations"
-FRONTEND_ROOT = "frontend"
+MIGRATIONS_DIR = "../migrations"
+FRONTEND_ROOT = "../frontend"
 GAME_CONFIG = {
     "wordCount": 10,
     "incorrectAnswerPenalty": 1,
