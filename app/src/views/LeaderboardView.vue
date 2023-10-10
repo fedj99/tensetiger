@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { getHighscore, getLatestScores, getScore, getTopKScores, getUser } from "@/api";
-import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import GlobalLeaderboard from "@/components/GlobalLeaderboard.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import UserLeaderboard from "@/components/UserLeaderboard.vue";
 import UserResults from "@/components/UserResults.vue";
 import type { Score } from "@/rules";
+import { useErrorsStore } from "@/stores/errors";
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useCookies } from "vue3-cookies";
@@ -17,8 +17,9 @@ const TOP_K = 10;
 const route = useRoute();
 const { cookies } = useCookies();
 
+const errorsStore = useErrorsStore();
+
 const loading = ref(true);
-const error = ref();
 
 const username = ref<string>(route.query.username as string);
 const score = ref<Score>();
@@ -87,8 +88,8 @@ async function fetchScores() {
 
         // Wait for all results
         await Promise.all(promises);
-    } catch (e) {
-        error.value = e;
+    } catch (e: any) {
+        errorsStore.setError(e);
         console.error(e);
     } finally {
         loading.value = false;
@@ -98,10 +99,7 @@ async function fetchScores() {
 
 <template>
     <Fullscreen center style="padding-bottom: 5em">
-        <main v-if="error" class="error">
-            <AxiosErrorWidget :error="error"></AxiosErrorWidget>
-        </main>
-        <main v-else-if="loading" class="loading">
+        <main v-if="loading" class="loading">
             <LoadingSpinner>Getting latest high scores...</LoadingSpinner>
         </main>
         <main v-else class="leaderboard">
