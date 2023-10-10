@@ -54,6 +54,17 @@ import Fullscreen from "@/components/Fullscreen.vue";
 </template>
 
 <style lang="scss" scoped>
+main {
+    max-width: min(100%, 50em);
+    padding: var(--padding-lg);
+}
+
+h1 {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    font-size: var(--font-size-huge);
+}
+
 h2 {
     font-size: var(--font-size-large);
     font-family: var(--font-default-serif);
@@ -62,6 +73,7 @@ h2 {
 ul {
     list-style-type: "⭐   ";
     list-style-position: inside;
+    padding: 0;
 }
 
 main {

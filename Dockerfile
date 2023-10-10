@@ -9,7 +9,7 @@ ARG API_WORKDIR=/srv
 
 # Keep these in sync with Vue build dir and Flask static dir
 ARG BUILD_OUTPUT_DIR=${APP_WORKDIR}/dist
-ARG STATIC_DIR=${API_WORKDIR}/frontend
+ARG STATIC_DIR=${API_WORKDIR}/api/frontend
 
 
 ### STAGE 1: BUILD

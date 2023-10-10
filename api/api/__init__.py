@@ -47,5 +47,9 @@ def create_app():
     # Register all routes
     app.register_blueprint(blueprints.api.bp)
     app.register_blueprint(blueprints.misc.bp)
+    app.register_blueprint(blueprints.frontend.bp)
+    app.register_blueprint(blueprints.errors.bp)
+
+    app.logger.info("Server started successfully")
 
     return app

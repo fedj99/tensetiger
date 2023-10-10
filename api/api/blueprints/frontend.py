@@ -10,18 +10,22 @@ bp = Blueprint("frontend", __name__)
 @bp.route("/<path:path>")
 def catch_all(path):
     # Get path in current_app folder
-    frontend_path = current_app.config["FRONTEND_ROOT"]
-    static_path = os.path.join(frontend_path, path)
+    frontend_path = os.path.realpath(
+        os.path.join(current_app.root_path, current_app.config["FRONTEND_ROOT"])
+    )
+    static_path = os.path.realpath(os.path.join(frontend_path, path))
 
     def try_path(path):
         candidates = [path, *glob(os.path.join(path, "index.*"))]
         for file in candidates:
-            current_app.logger.debug(f"Trying: `{file}`")
+            current_app.logger.debug("Trying: %s", file)
             if os.path.exists(file) and os.path.isfile(file):
                 # relpath = os.path.relpath(file, frontend_path)
                 # return send_from_directory(frontend_path, relpath)
+                current_app.logger.info("Resolved to: %s", file)
                 return send_file(file)
         # Not found
+        current_app.logger.warning("Did not resolve frontend file: %s", path)
         return None
 
     # If the path exists and is a file, serve this as a static file
