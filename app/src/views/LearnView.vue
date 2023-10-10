@@ -218,7 +218,6 @@ function onHintRevealed() {
 </template>
 
 <style lang="scss" scoped="">
-@import "@/assets/components.scss";
 @import "@/assets/base.scss";
 
 .main {

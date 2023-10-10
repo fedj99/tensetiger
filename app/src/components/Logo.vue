@@ -12,6 +12,7 @@
         width: min-content;
         margin-left: auto;
         margin-right: auto;
+        line-height: 1;
     }
 }
 </style>

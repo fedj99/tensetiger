@@ -67,7 +67,7 @@ export const useGameStore = defineStore("game", () => {
             shownKey: shownKey.value,
             hintRevealed: hintRevealed.value,
         };
-        console.log("Saving game state...", state);
+        console.log("Saving game state");
         localStorage.setItem(LS_GAME_STATE_KEY, JSON.stringify(state));
     }
 

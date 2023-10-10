@@ -90,6 +90,8 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/assets/base.scss";
+
 #theme-select {
     width: 0;
     height: 0;
@@ -112,6 +114,7 @@ onMounted(() => {
     border-radius: 200px;
     position: relative;
     background-color: rgba(var(--color-text-rgb), 0.1);
+    cursor: pointer;
 
     .slider {
         display: block;
@@ -121,8 +124,8 @@ onMounted(() => {
         line-height: 1;
         padding: 5px;
         box-sizing: content-box;
-        background-color: var(--color-text);
-        color: var(--color-background);
+        background-color: var(--color-accent-primary);
+        color: var(--color-contrast-primary);
         border-radius: 200px;
         transition: all 200ms;
         text-align: left;
@@ -148,5 +151,12 @@ onMounted(() => {
 input:checked + .switcher-toggle .slider {
     margin-left: 100%;
     transform: translateX(-100%);
+}
+
+@media screen and (max-width: $bp-mobile) {
+    .switcher-toggle .slider {
+        background-color: var(--color-background);
+        color: var(--color-text);
+    }
 }
 </style>

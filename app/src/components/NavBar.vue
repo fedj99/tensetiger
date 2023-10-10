@@ -18,10 +18,7 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
             <li class="li-name">
                 <span class="name">Bring Brang Brung</span>
             </li>
-            <li class="theme-switcher">
-                <ThemeSwitcher></ThemeSwitcher>
-            </li>
-            <span class="sep">|</span>
+
             <li>
                 <RouterLink :to="{ name: 'home' }" @click="navbarShown = false"
                     ><i class="ri-home-line"></i> Home</RouterLink
@@ -36,6 +33,10 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
                 <RouterLink :to="{ name: 'leaderboard' }" @click="navbarShown = false"
                     ><i class="ri-vip-crown-line"></i> Leaderboard</RouterLink
                 >
+            </li>
+            <span class="sep">|</span>
+            <li class="theme-switcher">
+                <ThemeSwitcher></ThemeSwitcher>
             </li>
         </ul>
     </nav>
@@ -65,12 +66,12 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
         background-color 200ms;
 }
 
-.theme-switcher {
-    margin-left: auto;
-}
-
 .name {
     font-family: var(--font-headings);
+}
+
+.li-name {
+    flex: 1;
 }
 
 .navbar-mobile-topbar {

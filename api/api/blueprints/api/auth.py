@@ -42,6 +42,9 @@ def register():
         except IntegrityError:
             return f'User "{username}" is already taken', 400
 
+    # Immediately perform login
+    login()
+
     # User created, return to client
     user = db.find_by_id(db.T_USERS, user_id)
 
@@ -60,17 +63,27 @@ def login():
 
     user = db.find_by(db.T_USERS, "username", username, single=True)
     if user is None:
-        return jsonify(f'No such user: "{username}"'), 401
+        # If there is no user with given username, create a new user with the given password
+        g.login_type = "new_user"
+        return register()
 
+    # Login user
     elif not check_password_hash(user["password"], password):
         return jsonify("Incorrect password"), 401
 
+    g.login_type = "existing_user"
     db.update(db.T_USERS, user["id"], {"last_logon": datetime.now().isoformat()})
     session.clear()
     session["user_id"] = user["id"]
     session["username"] = user["username"]
 
-    return jsonify({"success": True, "user": user})
+    # Create response
+    res = jsonify({"success": True, "user": user, "login_type": g.login_type})
+    # Set cookies
+    res.set_cookie("user_id", quote(str(user["id"])), samesite="Lax")
+    res.set_cookie("username", quote(user["username"]), samesite="Lax")
+
+    return res
 
 
 @bp.post("/logout")
