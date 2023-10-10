@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { login as apiLogin, logout as apiLogout } from "@/api";
-import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import Logo from "@/components/Logo.vue";
 import Modal from "@/components/Modal.vue";
+import { useErrorsStore } from "@/stores/errors";
 import { useGameStore } from "@/stores/game";
 import type { AxiosError } from "axios";
 import { computed, onMounted, ref } from "vue";
@@ -12,9 +12,9 @@ import { useCookies } from "vue3-cookies";
 
 const cookies = useCookies().cookies;
 const gameStore = useGameStore();
+const errorStore = useErrorsStore();
 
 const loading = ref(false);
-const error = ref<AxiosError>();
 const authErrorModal = ref<InstanceType<typeof Modal>>();
 
 const username = ref("");
@@ -49,7 +49,7 @@ async function login() {
                 password.value = "";
             } else {
                 // Another error
-                error.value = e;
+                errorStore.setError(e);
             }
         })
         .finally(() => (loading.value = false));
@@ -75,10 +75,7 @@ async function logout() {
 
 <template>
     <Fullscreen :center="true">
-        <main v-if="error">
-            <AxiosErrorWidget :error="error"></AxiosErrorWidget>
-        </main>
-        <main v-else-if="loading" class="loading">
+        <main v-if="loading" class="loading">
             <LoadingSpinner>Please wait while we log you in...</LoadingSpinner>
         </main>
         <main v-else class="main">
@@ -142,7 +139,7 @@ async function logout() {
     </Fullscreen>
 
     <Modal ref="authErrorModal" :buttons="[{ text: 'OK', role: 'confirm' }]">
-        Incorrect username or password
+        Wrong password
     </Modal>
 </template>
 
