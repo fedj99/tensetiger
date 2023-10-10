@@ -32,6 +32,8 @@ def create_app():
     # Create app
     app = Flask(__name__)
 
+    app.logger.info("Running application in %s mode", config_mode)
+
     # Configuration
     app.config.from_object("api.config.default")
     app.config.from_object(f"api.config.{config_mode}")
