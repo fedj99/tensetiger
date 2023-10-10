@@ -25,6 +25,10 @@ export function login(username: string, password: string) {
     }>("/login", { username, password });
 }
 
+export function logout() {
+    return api.post("/logout");
+}
+
 export function getUser(id: number) {
     return api.get<User>(`/users/${id}`);
 }
