@@ -101,7 +101,6 @@ function focusFirst() {
                 v-model="editableWords[key]"
                 :readonly="shownKey == key"
                 required
-                class="input-huge"
                 type="text"
                 :name="key"
                 :class="{ active: shownKey != key }"

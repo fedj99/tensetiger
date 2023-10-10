@@ -138,8 +138,6 @@ async function fetchScores() {
 </template>
 
 <style lang="scss" scoped>
-@import "@/assets/components.scss";
-
 main {
     width: min(100%, 50em);
     margin: auto;

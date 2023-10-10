@@ -18,11 +18,11 @@ const api = axios.create({
     withCredentials: true,
 });
 
-export function login(username: string) {
+export function login(username: string, password: string) {
     return api.post<{
         success: boolean;
         user: User;
-    }>("/login", { username });
+    }>("/login", { username, password });
 }
 
 export function getUser(id: number) {
