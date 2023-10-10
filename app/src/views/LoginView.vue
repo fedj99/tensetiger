@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { login as apiLogin } from "@/api";
+import { login as apiLogin, logout as apiLogout } from "@/api";
 import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
@@ -63,11 +63,13 @@ async function login() {
     password.value = "";
 }
 
-function logout() {
+async function logout() {
     cookies.remove("username");
     cookies.remove("user_id");
     username.value = "";
     userId.value = -1;
+
+    await apiLogout();
 }
 </script>
 
