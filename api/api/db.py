@@ -25,7 +25,7 @@ def get():
             user=conf["DB_USER"],
             password=conf["DB_PASSWORD"],
         )
-        current_app.logger.info("Connecting to database with:", db_conf)
+        current_app.logger.info("Connecting to database with: %s", str(db_conf))
         try:
             g.db = psycopg2.connect(**db_conf)
         except OperationalError as e:

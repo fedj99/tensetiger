@@ -40,4 +40,7 @@ def get_highscore():
 
 @bp.get("/scores/<int:id>")
 def get_score(id: int):  # pylint: disable=redefined-builtin
-    return jsonify(db.find_by_id(db.T_SCORES, id))
+    score = db.find_by_id(db.T_SCORES, id)
+    if score is None:
+        return jsonify(None), 404
+    return jsonify(score)
