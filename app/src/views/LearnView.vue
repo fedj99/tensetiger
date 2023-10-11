@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { postScore } from "@/api";
-import AxiosErrorWidget from "@/components/AxiosErrorWidget.vue";
 import Centered from "@/components/Centered.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
@@ -10,6 +9,7 @@ import Score from "@/components/Score.vue";
 import StreakWidget from "@/components/StreakWidget.vue";
 import WordForm from "@/components/WordForm.vue";
 import { getResult, type Result } from "@/rules";
+import { useErrorsStore } from "@/stores/errors";
 import { useGameStore } from "@/stores/game";
 import { type Answer, type Word, type WordFormKey } from "@/words";
 import { nextTick, onMounted, ref, watch } from "vue";
@@ -19,10 +19,10 @@ import { useCookies } from "vue3-cookies";
 const route = useRoute();
 const router = useRouter();
 const gameStore = useGameStore();
+const errorsStore = useErrorsStore();
 
 const loading = ref(true);
 const loadingMessage = ref("Loading...");
-const error = ref(null);
 
 const userName = ref<string>("");
 const userId = ref<number>(-1);
@@ -94,8 +94,7 @@ async function startRound() {
             }, 200);
         });
     } catch (e: any) {
-        error.value = e;
-        console.error(e);
+        errorsStore.setError(e);
     } finally {
         loading.value = false;
     }
@@ -118,7 +117,7 @@ async function endRound() {
             query: { user_id: userId.value, score_id: res.data.score_id.toString() },
         });
     } catch (e: any) {
-        error.value = e;
+        errorsStore.setError(e);
         console.error(e);
     } finally {
         loading.value = false;
@@ -160,10 +159,7 @@ function onHintRevealed() {
 <template>
     <Fullscreen>
         <Centered>
-            <main v-if="error">
-                <AxiosErrorWidget :error="error"></AxiosErrorWidget>
-            </main>
-            <main v-else-if="loading">
+            <main v-if="loading">
                 <LoadingSpinner>{{ loadingMessage }}</LoadingSpinner>
             </main>
             <main v-else class="main">
