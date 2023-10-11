@@ -11,7 +11,7 @@
 - [x] Dark mode
 - [x] Correct order of solutions
 - [x] Remove duplicated solutions from mistake screen
-- [ ] Password authentication
+- [x] Password authentication
 - [x] Display badge on 2x and 3x points words
 - [x] Clean up game state management
 - [x] Streaks
