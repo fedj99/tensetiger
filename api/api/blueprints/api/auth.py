@@ -37,18 +37,11 @@ def register():
                 'INSERT INTO {table} (username, "password") VALUES (%s, %s) RETURNING id'
             ).format(table=sql.Identifier(db.T_USERS))
             cur.execute(query, (username, generate_password_hash(password)))
-            user_id = cur.fetchone()["id"]
             db.commit()
         except IntegrityError:
             return f'User "{username}" is already taken', 400
 
-    # Immediately perform login
-    login()
-
-    # User created, return to client
-    user = db.find_by_id(db.T_USERS, user_id)
-
-    return jsonify({"success": True, "user": user, "login_type": "new_user"})
+    return login()
 
 
 @bp.post("/login")
