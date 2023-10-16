@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { login as apiLogin, logout as apiLogout } from "@/api";
+import { bugpilotLogin, bugpilotLogout } from "@/bugpilot";
 import Fullscreen from "@/components/Fullscreen.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import Logo from "@/components/Logo.vue";
@@ -55,8 +56,11 @@ async function login() {
         .finally(() => (loading.value = false));
 
     if (ans) {
-        username.value = ans.data.user.username;
-        userId.value = ans.data.user.id;
+        const user = ans.data.user;
+        username.value = user.username;
+        userId.value = user.id;
+
+        bugpilotLogin(user.id, user.username, user.last_logon);
     }
 
     // Clear input fields
@@ -70,6 +74,8 @@ async function logout() {
     userId.value = -1;
 
     await apiLogout();
+
+    bugpilotLogout();
 }
 </script>
 

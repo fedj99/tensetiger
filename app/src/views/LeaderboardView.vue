@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getHighscore, getLatestScores, getScore, getTopKScores, getUser } from "@/api";
+import { bugpilotLogin } from "@/bugpilot";
 import Fullscreen from "@/components/Fullscreen.vue";
 import GlobalLeaderboard from "@/components/GlobalLeaderboard.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
@@ -84,6 +85,9 @@ async function fetchScores() {
             );
             // Get personal high score
             promises.push(getHighscore(userId).then((res) => (personalHighScore.value = res.data)));
+
+            // Bug tracking
+            bugpilotLogin(userId, username.value);
         }
 
         // Wait for all results
