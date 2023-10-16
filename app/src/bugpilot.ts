@@ -1,3 +1,14 @@
+interface Bugpilot {
+    identify?: (payload: object) => any;
+    logout?: () => any;
+}
+
+declare global {
+    interface Window {
+        Bugpilot?: Bugpilot;
+    }
+}
+
 export function bugpilotLogin(userId: number, username: string, lastLogon: string = "unknown") {
     // Set bug report options
     let url = undefined;
@@ -8,7 +19,7 @@ export function bugpilotLogin(userId: number, username: string, lastLogon: strin
             window.location.search +
             window.location.hash;
     }
-    window.Bugpilot.identify({
+    window.Bugpilot?.identify?.({
         id: userId,
         username: username,
         lastLogon: lastLogon,
@@ -17,5 +28,5 @@ export function bugpilotLogin(userId: number, username: string, lastLogon: strin
 }
 
 export function bugpilotLogout() {
-    window.Bugpilot.logout();
+    window.Bugpilot?.logout?.();
 }
