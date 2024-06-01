@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { postScore } from "@/api";
-import { bugpilotLogin } from "@/bugpilot";
 import Centered from "@/components/Centered.vue";
 import Fullscreen from "@/components/Fullscreen.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
-// import Logo from "@/components/Logo.vue";
 import ProgressBar from "@/components/ProgressBar.vue";
 import Score from "@/components/Score.vue";
 import StreakWidget from "@/components/StreakWidget.vue";
@@ -43,7 +41,6 @@ onMounted(() => {
         alert("Please enter a username first");
         useRouter().push({ name: "login" });
     }
-    bugpilotLogin(userId.value, userName.value);
 });
 
 // Game methods
