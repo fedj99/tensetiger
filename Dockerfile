@@ -30,12 +30,14 @@ RUN npm install \
 
 ### STAGE 2: DEPLOY
 
-FROM python:3.10 AS deploy
+FROM python:3.11 AS deploy
 
 # Needs to be set for gunicorn to find app
 ENV PYTHONPATH=src
-ENV FLASK_CONFIG=docker_local
-ENV FLASK_DB_PASSWORD=root
+ENV FLASK_ENV=production
+ENV FLASK_CONFIG=production
+# Set the DB password as a secret in the deployment
+# ENV FLASK_DB_PASSWORD=root
 ENV GUNICORN_SERVER_PORT=8000
 
 # Inherit variables from global scope
