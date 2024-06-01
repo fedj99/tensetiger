@@ -1,6 +1,8 @@
+import os
+
 APP_NAME = "b3-default"
-MIGRATIONS_DIR = "../migrations"
-FRONTEND_ROOT = "../frontend"
+MIGRATIONS_DIR = os.path.join(os.path.dirname(__file__), "migrations")
+FRONTEND_ROOT = os.path.join(os.path.dirname(__file__), "frontend")
 GAME_CONFIG = {
     "wordCount": 10,
     "incorrectAnswerPenalty": 1,
