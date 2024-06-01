@@ -11,9 +11,12 @@ bp = Blueprint("frontend", __name__)
 def catch_all(path):
     # Get path in current_app folder
     frontend_path = os.path.realpath(
-        os.path.join(current_app.root_path, current_app.config["FRONTEND_ROOT"])
+        os.path.join(os.path.dirname(current_app.root_path), current_app.config["FRONTEND_ROOT"])
     )
     static_path = os.path.realpath(os.path.join(frontend_path, path))
+
+    print("frontend_path", frontend_path)
+    print("static_path", static_path)
 
     def try_path(path):
         candidates = [path, *glob(os.path.join(path, "index.*"))]
