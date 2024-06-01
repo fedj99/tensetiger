@@ -6,8 +6,6 @@
         <span class="sep"> &mdash; </span>
         <a href="https://gitlab.com/fettemanto/b3">Source Code</a>
         <span class="sep"> &mdash; </span>
-        <button id="bug-report-button" class="link">Report a bug</button>
-        <span class="sep"> &mdash; </span>
         <RouterLink :to="{ name: 'attributions' }">Attributions</RouterLink>
     </footer>
 </template>
