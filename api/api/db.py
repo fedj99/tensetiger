@@ -32,7 +32,16 @@ def get():
             current_app.logger.error("Failed to connect to database!")
             current_app.logger.error(e)
 
-    return g.db
+    if "db" in g:
+        return g.db
+
+    raise ConnectionError(
+        f"Failed to connect to database with "
+        f"host={conf['DB_HOST']}, "
+        f"database={conf['DB_DATABASE']}, "
+        f"user={conf['DB_USER']}, "
+        f"using password: {'yes' if conf['DB_PASSWORD'] not in [None, ''] else 'no'}"
+    )
 
 
 def cursor():
