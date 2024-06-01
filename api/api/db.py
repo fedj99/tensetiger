@@ -68,8 +68,8 @@ def init():
     migrations_dir = os.path.realpath(
         os.path.join(current_app.root_path, current_app.config["MIGRATIONS_DIR"])
     )
-    schema_dir = os.path.join(migrations_dir, "schema")
-    data_dir = os.path.join(migrations_dir, "data")
+    schema_dir = os.path.join(migrations_dir, "00_schema")
+    data_dir = os.path.join(migrations_dir, "01_data")
 
     print(
         tabulate(

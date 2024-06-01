@@ -1,0 +1,17 @@
+FROM python:3.11
+
+ARG SRV_PORT=5000
+
+WORKDIR /srv
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+ENV SRV_PORT=${SRV_PORT:-5000}
+EXPOSE ${SRV_PORT}
+CMD ["./start-server.sh"]

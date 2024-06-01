@@ -1,0 +1,19 @@
+FROM node:lts-bookworm
+
+WORKDIR /app
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    g++=4:12.2.0-3 \
+    build-essential=12.9 \
+    make=4.3-4.1 \
+    python3=3.11.2-1+b1 \
+    bash=5.2.15-2+b2 \
+    && rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
+
+COPY package.json package-lock.json ./
+
+RUN npm install
+
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host"]
