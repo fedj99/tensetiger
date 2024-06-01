@@ -14,7 +14,7 @@ ARG STATIC_DIR=${API_WORKDIR}/frontend
 
 ### STAGE 1: BUILD
 
-FROM node:18 AS build
+FROM node:lts AS build
 
 # Inherit variables from global scope
 ARG APP_SOURCE
