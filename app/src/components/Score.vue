@@ -15,7 +15,7 @@ const gameStore = useGameStore();
 <style lang="scss" scoped>
 @import "@/assets/base.scss";
 .box {
-    color: var(--color-accent-secondary);
+    color: var(--color-accent-primary);
     display: flex;
     gap: var(--padding-lg);
     align-items: baseline;

@@ -124,11 +124,11 @@ async function logout() {
                         <i class="ri-arrow-right-double-line"></i> {{ startText }}
                     </RouterLink>
 
-                    <RouterLink :to="{ name: 'leaderboard' }" class="button outlined contrast">
+                    <RouterLink :to="{ name: 'leaderboard' }" class="button">
                         <i class="ri-vip-crown-fill"></i> See Leaderboard
                     </RouterLink>
 
-                    <button class="danger outlined" @click="logout()">
+                    <button class="logout-button danger" @click="logout()">
                         <i class="ri-logout-box-r-fill"></i> Logout
                     </button>
                 </div>
@@ -178,6 +178,10 @@ async function logout() {
     flex-direction: column;
     align-items: stretch;
     gap: var(--gap-lg);
+}
+
+.logout-button {
+    margin-top: 5em;
 }
 
 @media screen and (max-width: $bp-mobile) {

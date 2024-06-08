@@ -54,7 +54,7 @@ function formatDate(dateString: string) {
                 <tr v-for="(score, idx) of scores" :key="score.id">
                     <td v-if="showRank">{{ idx + 1 }}</td>
                     <td>{{ formatDate(score.date) }}</td>
-                    <td v-if="showPlayer" style="color: var(--color-accent-secondary)">
+                    <td v-if="showPlayer">
                         {{ score.username }}
                     </td>
                     <td style="color: var(--color-accent-primary)">{{ score.score }}</td>
