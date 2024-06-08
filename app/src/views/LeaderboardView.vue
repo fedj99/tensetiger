@@ -127,7 +127,7 @@ async function fetchScores() {
             <hr />
 
             <div>
-                <RouterLink :to="{ name: 'home' }" class="button reset button-huge"
+                <RouterLink :to="{ name: 'home' }" class="button reset button-huge success"
                     >Play Again!</RouterLink
                 >
             </div>

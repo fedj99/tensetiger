@@ -183,7 +183,7 @@ button,
         outline-width 100ms,
         box-shadow 200ms;
 
-    @include button-style(var(--color-text-rgb), var(--color-contrast-primary));
+    @include button-style(var(--color-neutral-rgb), var(--color-neutral-contrast));
     &.outlined {
         @include button-style-outlined(var(--color-accent-primary-rgb), var(--color-contrast-primary));
     }
