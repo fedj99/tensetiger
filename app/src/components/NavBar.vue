@@ -9,14 +9,14 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
 <template>
     <nav class="navbar" :class="navbarMobileClass">
         <div class="navbar-mobile-topbar">
-            <span class="name">Bring Brang Brung</span>
+            <span class="name">TenseTiger</span>
             <button class="mobile-toggle-button" @click="navbarShown = !navbarShown">
                 <i class="ri-menu-line"></i>
             </button>
         </div>
         <ul class="navbar-items" :class="navbarMobileClass">
             <li class="li-name">
-                <span class="name">Bring Brang Brung</span>
+                <span class="name">TenseTiger</span>
             </li>
 
             <li>
