@@ -31,7 +31,7 @@ const fillPercent = computed(() => fillRatio.value * 100);
     position: relative;
     width: 100%;
     height: 2em;
-    border: var(--border-width) solid rgba(var(--color-accent-secondary-rgb), 0.6);
+    border: var(--border-width) solid rgba(var(--color-accent-primary-rgb), 0.6);
     border-radius: var(--br);
     margin-top: 1em;
 
@@ -39,17 +39,17 @@ const fillPercent = computed(() => fillRatio.value * 100);
     justify-content: center;
     align-items: center;
 
-    box-shadow: 0 0 1.5rem rgba(var(--color-accent-secondary-rgb), 0.2);
+    box-shadow: 0 0 1.5rem rgba(var(--color-accent-primary-rgb), 0.2);
     .text {
         font-weight: bold;
-        color: var(--color-accent-secondary);
+        color: var(--color-accent-primary);
     }
     .pb-filler {
         position: absolute;
         inset: 0;
         width: 0;
         height: 100%;
-        background-color: rgba(var(--color-accent-secondary-rgb), 0.3);
+        background-color: rgba(var(--color-accent-primary-rgb), 0.3);
         transition: width 400ms cubic-bezier(0.165, 0.84, 0.44, 1);
     }
 }

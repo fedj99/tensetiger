@@ -102,6 +102,7 @@ h4,
 h5,
 h6 {
     font-family: var(--font-headings);
+    font-weight: normal;
 
     &.contrast {
         color: var(--color-contrast);
@@ -182,7 +183,7 @@ button,
         outline-width 100ms,
         box-shadow 200ms;
 
-    @include button-style(var(--color-accent-primary-rgb), var(--color-contrast-primary));
+    @include button-style(var(--color-text-rgb), var(--color-contrast-primary));
     &.outlined {
         @include button-style-outlined(var(--color-accent-primary-rgb), var(--color-contrast-primary));
     }
