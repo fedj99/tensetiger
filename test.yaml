@@ -1,0 +1,8 @@
+some:
+  key: "String value"
+  other: 12
+  how: |
+    This is some cool multiline string.
+
+    Here, newlines are preserved.
+    Not sure what happens to indents though.

@@ -1,6 +1,6 @@
 services:
   api:
-    image: b3-api
+    image: tensetiger-api
     build:
       context: ./api
       dockerfile: Dockerfile.local
@@ -14,7 +14,7 @@ services:
       - postgres
 
   app:
-    image: b3-app
+    image: tensetiger-app
     build:
       context: ./app
       dockerfile: Dockerfile.local
@@ -32,8 +32,8 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: "root"
-      POSTGRES_USER: b3_dev
-      POSTGRES_DB: b3_dev
+      POSTGRES_USER: tensetiger_dev
+      POSTGRES_DB: tensetiger_dev
     volumes:
       - ./db_data:/var/lib/postgresql/data
       - ./db/initdb.d:/docker-entrypoint-initdb.d

@@ -1,9 +1,9 @@
 from .default import GAME_CONFIG
 
-APP_NAME = "b3-dev"
+APP_NAME = "tensetiger-dev"
 DB_HOST = "postgres"
-DB_USER = "b3_dev"
-DB_DATABASE = "b3_dev"
+DB_USER = "tensetiger_dev"
+DB_DATABASE = "tensetiger_dev"
 
 GAME_CONFIG.update(
     {

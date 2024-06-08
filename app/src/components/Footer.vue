@@ -4,7 +4,7 @@
     <footer>
         &copy; 2023 <a href="mailto:federico.mantovani@hispeed.ch">Federico Mantovani</a>
         <span class="sep"> &mdash; </span>
-        <a href="https://gitlab.com/fettemanto/b3">Source Code</a>
+        <a href="https://gitlab.com/fettemanto/tensetiger">Source Code</a>
         <span class="sep"> &mdash; </span>
         <RouterLink :to="{ name: 'attributions' }">Attributions</RouterLink>
     </footer>
