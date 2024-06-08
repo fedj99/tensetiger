@@ -16,7 +16,9 @@ const navbarMobileClass = computed(() => (navbarShown.value ? "mobile-shown" : "
         </div>
         <ul class="navbar-items" :class="navbarMobileClass">
             <li class="li-name">
-                <span class="name">TenseTiger</span>
+                <RouterLink :to="{ name: 'home' }">
+                    <span class="name">TenseTiger</span>
+                </RouterLink>
             </li>
 
             <li>
