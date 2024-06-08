@@ -57,7 +57,7 @@ const router = createRouter({
             component: InternalServerErrorView,
         },
         {
-            path: "/generic-error",
+            path: "/error",
             name: "generic-error",
             component: GenericErrorView,
         },
