@@ -102,6 +102,10 @@ h4,
 h5,
 h6 {
     font-family: var(--font-headings);
+
+    &.contrast {
+        color: var(--color-contrast);
+    }
 }
 
 h1 {
@@ -194,6 +198,20 @@ button,
         @include button-style(var(--color-success-rgb), var(--color-success-contrast));
         &.outlined {
             @include button-style-outlined(var(--color-success-rgb), var(--color-success-contrast));
+        }
+    }
+
+    &.secondary {
+        @include button-style(var(--color-accent-secondary-rgb), var(--color-accent-secondary-contrast));
+        &.outlined {
+            @include button-style-outlined(var(--color-accent-secondary-rgb), var(--color-accent-secondary-contrast));
+        }
+    }
+
+    &.contrast {
+        @include button-style(var(--color-contrast-rgb), var(--color-contrast-contrast));
+        &.outlined {
+            @include button-style-outlined(var(--color-contrast-rgb), var(--color-contrast-contrast));
         }
     }
 

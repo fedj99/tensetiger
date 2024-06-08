@@ -1,5 +1,5 @@
 <template>
-    <h1>TenseTiger</h1>
+    <h1 class="contrast">TenseTiger</h1>
 </template>
 
 <script setup lang="ts"></script>
