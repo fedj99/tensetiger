@@ -1,0 +1,9 @@
+{
+    "key": "value",
+    "number": 123,
+    "boolean": false,
+    "object": null,
+    "object2": {
+        "array": [1, 2, 3, 4]
+    }
+}

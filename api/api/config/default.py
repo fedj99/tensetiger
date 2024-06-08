@@ -1,6 +1,6 @@
 import os
 
-APP_NAME = "b3-default"
+APP_NAME = "tensetiger-default"
 MIGRATIONS_DIR = "migrations"
 FRONTEND_ROOT = "frontend"
 GAME_CONFIG = {

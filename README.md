@@ -148,7 +148,7 @@ Node build dependencies are not included in the final image (multistage build).
 You can build the image locally with:
 
 ```sh
-docker build -t b3 .
+docker build -t tensetiger .
 ```
 
 Render.com will automatically build and deploy the application when pushing to
