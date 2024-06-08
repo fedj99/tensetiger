@@ -1,3 +1,4 @@
+import logging
 import os
 
 import rich.traceback
@@ -32,6 +33,7 @@ def create_app():
     # Create app
     app = Flask(__name__)
 
+    app.logger.setLevel(logging.DEBUG if config_mode == "development" else logging.INFO)
     app.logger.info("Running application in %s mode", config_mode)
 
     # Configuration
@@ -41,7 +43,7 @@ def create_app():
 
     # Enable CORS in dev mode. In prod mode, api should be hosted under same domain
     if os.environ["FLASK_ENV"] == "development":
-        CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+        CORS(app, supports_credentials=True)
 
     # Register database commands and teardown command
     db.init_app(app)
