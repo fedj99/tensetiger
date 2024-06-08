@@ -115,7 +115,7 @@ async function logout() {
 
             <div v-else>
                 <h2 class="greeting">
-                    Welcome back, <span class="color-secondary">{{ username }}</span
+                    Welcome back, <span style="font-weight: bolder">{{ username }}</span
                     >!
                 </h2>
 
@@ -124,10 +124,7 @@ async function logout() {
                         <i class="ri-arrow-right-double-line"></i> {{ startText }}
                     </RouterLink>
 
-                    <RouterLink
-                        :to="{ name: 'leaderboard' }"
-                        class="link-leaderboard button outlined"
-                    >
+                    <RouterLink :to="{ name: 'leaderboard' }" class="button outlined contrast">
                         <i class="ri-vip-crown-fill"></i> See Leaderboard
                     </RouterLink>
 
@@ -150,6 +147,7 @@ async function logout() {
 .greeting {
     font-size: var(--font-size-large);
     font-family: var(--font-default-sans);
+    font-weight: normal;
 }
 
 .main {
