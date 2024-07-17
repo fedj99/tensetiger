@@ -1,7 +1,6 @@
 {
     "name": "TenseTiger",
-    "short_name": "BBB",
-    "lang": "en-GB",
+    "short_name": "TenseTiger",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
@@ -14,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#fb4d08",
-    "background_color": "#ffffff",
+    "theme_color": "#eb5e28",
+    "background_color": "#eb5e28",
     "display": "standalone"
 }
