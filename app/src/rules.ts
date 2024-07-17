@@ -12,6 +12,10 @@ export interface GameConfig {
     noParticipleAnswers: string[];
     hintRevealedPenalty: number;
     streakCheckpoints: StreakCheckpoint[];
+    minTimeBonusSeconds: number;
+    minTimeBonusPoints: number;
+    maxTimeBonusSeconds: number;
+    maxTimeBonusPoints: number;
 }
 
 export const defaultGameConfig: GameConfig = {
@@ -21,6 +25,10 @@ export const defaultGameConfig: GameConfig = {
     noParticipleAnswers: [],
     hintRevealedPenalty: 0,
     streakCheckpoints: [],
+    minTimeBonusSeconds: 90,
+    minTimeBonusPoints: 5,
+    maxTimeBonusSeconds: 40,
+    maxTimeBonusPoints: 30,
 };
 
 export interface Mistake {

@@ -1,6 +1,8 @@
 import { getGameConfig, getWordList } from "@/api";
+import { lerp } from "@/math";
 import { defaultGameConfig, type GameConfig, type Result } from "@/rules";
 import { wordFormKeys, type Word, type WordFormKey } from "@/words";
+import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
 
@@ -12,8 +14,10 @@ export interface GameState {
     progress: number;
     score: number;
     streak: number;
-    shownKey: string;
+    shownKey: WordFormKey;
     hintRevealed: boolean;
+    startTime: DateTime;
+    endTime: DateTime | undefined;
 }
 
 export const useGameStore = defineStore("game", () => {
@@ -26,6 +30,11 @@ export const useGameStore = defineStore("game", () => {
     const shownKey = ref<WordFormKey>("form_infinitive");
     const hintRevealed = ref<boolean>(false);
     const streak = ref<number>(0);
+    const startTime = ref<DateTime>();
+    const endTime = ref<DateTime>();
+    const config = computed(() => {
+        return _config.value || defaultGameConfig;
+    });
     const currentStreakBonus = computed(() =>
         Math.max(
             0, // In case there is no streak, return 0 (all checkpoints will be higher)
@@ -34,8 +43,17 @@ export const useGameStore = defineStore("game", () => {
                 .map((x) => x.points)
         )
     );
-    const config = computed(() => {
-        return _config.value || defaultGameConfig;
+    const currentTimeBonus = computed(() => {
+        const currentTime = DateTime.now();
+        const currentSeconds = currentTime.minus(startTime.value ?? DateTime.now()).toSeconds();
+        const gc = config.value;
+        const bonus = lerp(
+            gc.minTimeBonusPoints,
+            gc.maxTimeBonusPoints,
+            currentSeconds - gc.minTimeBonusSeconds
+        );
+
+        return bonus;
     });
 
     // Set up a watcher function to save the state when it changes
@@ -66,6 +84,8 @@ export const useGameStore = defineStore("game", () => {
             streak: streak.value,
             shownKey: shownKey.value,
             hintRevealed: hintRevealed.value,
+            startTime: startTime.value ?? DateTime.now(),
+            endTime: endTime.value,
         };
         console.log("Saving game state");
         localStorage.setItem(LS_GAME_STATE_KEY, JSON.stringify(state));
@@ -75,7 +95,7 @@ export const useGameStore = defineStore("game", () => {
         const cacheItem = localStorage.getItem(LS_GAME_STATE_KEY);
         if (!cacheItem) return false;
 
-        const state = JSON.parse(cacheItem);
+        const state: GameState = JSON.parse(cacheItem);
         console.log("Loading game state:", state);
 
         words.value = state.words;
@@ -85,6 +105,9 @@ export const useGameStore = defineStore("game", () => {
         streak.value = state.streak;
         shownKey.value = state.shownKey;
         hintRevealed.value = state.hintRevealed;
+        startTime.value = state.startTime;
+        endTime.value = state.endTime;
+
         return true;
     }
 
@@ -97,6 +120,8 @@ export const useGameStore = defineStore("game", () => {
         progress.value = -1;
         score.value = 0;
         streak.value = 0;
+        startTime.value = DateTime.now();
+        endTime.value = undefined;
         // Set random shown value
         next();
     }
