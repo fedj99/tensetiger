@@ -227,7 +227,7 @@ function onHintRevealed() {
 }
 
 .rules {
-    list-style: "👉🏿";
+    list-style: "👉";
     line-height: 1.5em;
 
     &:is(ul) li {
@@ -236,7 +236,7 @@ function onHintRevealed() {
 }
 
 [data-theme="dark"] .rules {
-    list-style: "👉🏻";
+    list-style: "👉";
 }
 
 .player {
