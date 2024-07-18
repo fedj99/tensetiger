@@ -36,6 +36,11 @@ const ending = computed(() => {
             <p>You scored</p>
             <h1 class="score">{{ score?.score }}</h1>
             <p>points. {{ ending }}</p>
+            <!--
+            Only show points breakdown if coming right from the round, otherwise store is reset and
+            values are not correct. To show the points breakdown in any case, would have to store
+            all bonuses in the score table, which it currently is not set up for.
+            -->
             <p v-if="gameStore.score > 0">
                 {{ gameStore.score }} (base) + {{ gameStore.currentStreakBonus }} (correct answer
                 streak) + {{ gameStore.currentTimeBonus }} (time bonus)
