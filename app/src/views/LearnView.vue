@@ -104,11 +104,11 @@ async function endRound() {
     try {
         // Signal to the game store that the round has finished
         gameStore.finish();
-        console.log("Ending round. Points achieved:", gameStore.score);
+        console.log("Ending round. Points achieved:", gameStore.totalScore);
         // Post score and get score ID back
         loading.value = true;
         loadingMessage.value = "Submitting your results...";
-        const res = await postScore(userId.value, userName.value, gameStore.score);
+        const res = await postScore(userId.value, userName.value, gameStore.totalScore);
         // When the score has been posted, it's safe to delete
         await gameStore.clearCache();
         // Then go to leaderboards with score ID, where all results are fetched

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Score } from "@/rules";
+import { useGameStore } from "@/stores/game";
 import { computed } from "vue";
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const gameStore = useGameStore();
 
 const greeting = computed(() => {
     if (!props.score) return "";
@@ -33,6 +36,10 @@ const ending = computed(() => {
             <p>You scored</p>
             <h1 class="score">{{ score?.score }}</h1>
             <p>points. {{ ending }}</p>
+            <p v-if="gameStore.score > 0">
+                {{ gameStore.score }} (base) + {{ gameStore.currentStreakBonus }} (correct answer
+                streak) + {{ gameStore.currentTimeBonus }} (time bonus)
+            </p>
             <hr />
 
             <p

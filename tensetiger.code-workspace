@@ -20,5 +20,17 @@
 		"cSpell.words": [
 			"jsonify"
 		],
+		"sqltools.connections": [
+			{
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"driver": "PostgreSQL",
+				"name": "tensetiger_dev",
+				"database": "tensetiger_dev",
+				"username": "tensetiger_dev",
+				"password": "root"
+			}
+		],
 	}
 }

@@ -60,6 +60,9 @@ export const useGameStore = defineStore("game", () => {
 
         return bonusPoints;
     });
+    const totalScore = computed(
+        () => score.value + currentStreakBonus.value + currentTimeBonus.value
+    );
 
     // Set up a watcher function to save the state when it changes
     watch([words, wordCount, progress, score, streak, shownKey, hintRevealed], () => saveState());
@@ -182,10 +185,11 @@ export const useGameStore = defineStore("game", () => {
     }
 
     function finish() {
-        // If there currently still is a streak, award the points
-        console.log("current time bonus", currentTimeBonus.value);
-        score.value += currentStreakBonus.value;
-        score.value += currentTimeBonus.value;
+        // Use totalScore to get the final points
+
+        // // If there currently still is a streak, award the points
+        // score.value += currentStreakBonus.value;
+        // score.value += currentTimeBonus.value;
 
         stopCounter();
     }
@@ -216,6 +220,7 @@ export const useGameStore = defineStore("game", () => {
         streak,
         currentStreakBonus,
         currentTimeBonus,
+        totalScore,
         hasSavedGameState,
         next,
         reset,
