@@ -14,5 +14,7 @@ GAME_CONFIG.update(
             {"streak": 3, "points": 20},
             {"streak": 4, "points": 30},
         ],
+        "minTimeBonusSeconds": 15,
+        "maxTimeBonusSeconds": 45,
     }
 )

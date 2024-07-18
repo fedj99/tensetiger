@@ -1,5 +1,5 @@
 import { getGameConfig, getWordList } from "@/api";
-import { lerp } from "@/math";
+import { invlerp, lerp } from "@/math";
 import { defaultGameConfig, type GameConfig, type Result } from "@/rules";
 import { wordFormKeys, type Word, type WordFormKey } from "@/words";
 import { DateTime } from "luxon";
@@ -16,8 +16,9 @@ export interface GameState {
     streak: number;
     shownKey: WordFormKey;
     hintRevealed: boolean;
-    startTime: DateTime;
-    endTime: DateTime | undefined;
+    startTime: string;
+    elapsedSeconds: number;
+    endTime: string | undefined;
 }
 
 export const useGameStore = defineStore("game", () => {
@@ -30,8 +31,10 @@ export const useGameStore = defineStore("game", () => {
     const shownKey = ref<WordFormKey>("form_infinitive");
     const hintRevealed = ref<boolean>(false);
     const streak = ref<number>(0);
-    const startTime = ref<DateTime>();
+    const startTime = ref<DateTime>(DateTime.now());
     const endTime = ref<DateTime>();
+    const elapsedSeconds = ref<number>(0);
+
     const config = computed(() => {
         return _config.value || defaultGameConfig;
     });
@@ -44,20 +47,24 @@ export const useGameStore = defineStore("game", () => {
         )
     );
     const currentTimeBonus = computed(() => {
-        const currentTime = DateTime.now();
-        const currentSeconds = currentTime.minus(startTime.value ?? DateTime.now()).toSeconds();
-        const gc = config.value;
-        const bonus = lerp(
-            gc.minTimeBonusPoints,
-            gc.maxTimeBonusPoints,
-            currentSeconds - gc.minTimeBonusSeconds
-        );
+        if (!startTime.value) return 0;
 
-        return bonus;
+        // Find the fraction between max and min time, with 1.0 being min time and 0.0 being max time
+        const { minTimeBonusSeconds: minSeconds, maxTimeBonusSeconds: maxSeconds } = config.value;
+        const frac = 1 - invlerp(minSeconds, maxSeconds, elapsedSeconds.value);
+        console.log("frac", frac);
+
+        // Compute the bonus points
+        const { minTimeBonusPoints: minPoints, maxTimeBonusPoints: maxPoints } = config.value;
+        const bonusPoints = Math.round(lerp(minPoints, maxPoints, frac));
+
+        return bonusPoints;
     });
 
     // Set up a watcher function to save the state when it changes
     watch([words, wordCount, progress, score, streak, shownKey, hintRevealed], () => saveState());
+
+    let counterHandle: number | undefined = undefined;
 
     function next() {
         progress.value++;
@@ -69,6 +76,17 @@ export const useGameStore = defineStore("game", () => {
         console.log("Clearing cached game...");
         // Clear the cache
         localStorage.removeItem(LS_GAME_STATE_KEY);
+    }
+
+    function startCounter() {
+        stopCounter();
+        counterHandle = setInterval(handleCounterUpdate, 1000);
+    }
+
+    function stopCounter() {
+        if (counterHandle != undefined) {
+            clearInterval(counterHandle);
+        }
     }
 
     function hasSavedGameState() {
@@ -84,8 +102,9 @@ export const useGameStore = defineStore("game", () => {
             streak: streak.value,
             shownKey: shownKey.value,
             hintRevealed: hintRevealed.value,
-            startTime: startTime.value ?? DateTime.now(),
-            endTime: endTime.value,
+            startTime: startTime.value.toISO() || "undefined",
+            elapsedSeconds: elapsedSeconds.value,
+            endTime: endTime.value?.toISO() || undefined,
         };
         console.log("Saving game state");
         localStorage.setItem(LS_GAME_STATE_KEY, JSON.stringify(state));
@@ -105,8 +124,9 @@ export const useGameStore = defineStore("game", () => {
         streak.value = state.streak;
         shownKey.value = state.shownKey;
         hintRevealed.value = state.hintRevealed;
-        startTime.value = state.startTime;
-        endTime.value = state.endTime;
+        startTime.value = DateTime.fromISO(state.startTime);
+        endTime.value = state.endTime ? DateTime.fromISO(state.endTime) : undefined;
+        elapsedSeconds.value = state.elapsedSeconds;
 
         return true;
     }
@@ -122,12 +142,16 @@ export const useGameStore = defineStore("game", () => {
         streak.value = 0;
         startTime.value = DateTime.now();
         endTime.value = undefined;
+
         // Set random shown value
         next();
+
+        handleCounterUpdate();
+        startCounter();
     }
 
     function resume() {
-        // Really nothing to do here, loadState() already performs every necessary action
+        startCounter();
     }
 
     function addPoints(result: Result) {
@@ -159,7 +183,22 @@ export const useGameStore = defineStore("game", () => {
 
     function finish() {
         // If there currently still is a streak, award the points
+        console.log("current time bonus", currentTimeBonus.value);
         score.value += currentStreakBonus.value;
+        score.value += currentTimeBonus.value;
+
+        stopCounter();
+    }
+
+    function handleCounterUpdate() {
+        if (!startTime.value) {
+            elapsedSeconds.value = 0;
+        } else {
+            // Get the number of seconds passed since beginning
+            elapsedSeconds.value = Math.round(
+                DateTime.now().diff(startTime.value, "seconds").seconds
+            );
+        }
     }
 
     return {
@@ -171,8 +210,12 @@ export const useGameStore = defineStore("game", () => {
         currentWord,
         shownKey,
         hintRevealed,
+        startTime,
+        endTime,
+        elapsedSeconds,
         streak,
         currentStreakBonus,
+        currentTimeBonus,
         hasSavedGameState,
         next,
         reset,

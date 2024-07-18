@@ -6,6 +6,7 @@ import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import ProgressBar from "@/components/ProgressBar.vue";
 import Score from "@/components/Score.vue";
 import StreakWidget from "@/components/StreakWidget.vue";
+import TimeBonusWidget from "@/components/TimeBonusWidget.vue";
 import WordForm from "@/components/WordForm.vue";
 import { getResult, type Result } from "@/rules";
 import { useErrorsStore } from "@/stores/errors";
@@ -174,7 +175,10 @@ function onHintRevealed() {
                 </div>
 
                 <Score></Score>
-                <StreakWidget v-if="gameStore.currentStreakBonus > 0"></StreakWidget>
+                <div class="widgets">
+                    <StreakWidget v-if="gameStore.currentStreakBonus > 0"></StreakWidget>
+                    <TimeBonusWidget></TimeBonusWidget>
+                </div>
                 <!-- <Logo></Logo> -->
 
                 <ProgressBar
@@ -245,6 +249,12 @@ function onHintRevealed() {
     align-items: center;
     justify-content: center;
     gap: var(--gap);
+}
+
+.widgets {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
 }
 
 @media screen and (max-width: $bp-mobile) {

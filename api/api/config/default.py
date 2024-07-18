@@ -21,4 +21,8 @@ GAME_CONFIG = {
         {"streak": 8, "points": 15},
         {"streak": 10, "points": 30},
     ],
+    "minTimeBonusSeconds": 90,
+    "minTimeBonusPoints": 5,
+    "maxTimeBonusSeconds": 40,
+    "maxTimeBonusPoints": 30,
 }
