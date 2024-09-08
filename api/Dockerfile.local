@@ -12,6 +12,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy over remaining files
+COPY . .
+
 ENV SRV_PORT=${SRV_PORT:-5000}
 EXPOSE ${SRV_PORT}
 CMD ["./start-server.sh"]

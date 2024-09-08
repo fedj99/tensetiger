@@ -8,10 +8,15 @@ services:
         SRV_PORT: ${SRV_PORT}
     ports:
       - 5000:5000
-    volumes:
-      - ./api:/srv
     depends_on:
       - postgres
+    develop:
+      watch:
+        - action: sync
+          path: ./api
+          target: /srv
+        - action: rebuild
+          path: ./api/requirements.txt
 
   app:
     image: tensetiger-app
@@ -20,13 +25,23 @@ services:
       dockerfile: Dockerfile.local
     ports:
       - 5173:5173
-    volumes:
-      - ./app:/app
     depends_on:
       - api
+    develop:
+      watch:
+        - action: sync
+          path: ./app
+          target: /app
+          ignore:
+            - ./app/node_modules/
+        - action: rebuild
+          path: ./app/package.json
 
   postgres:
-    image: postgres:16
+    image: tensetiger-db
+    build:
+      context: ./db
+      dockerfile: Dockerfile.local
     restart: always
     ports:
       - 5432:5432
@@ -34,9 +49,11 @@ services:
       POSTGRES_PASSWORD: "root"
       POSTGRES_USER: tensetiger_dev
       POSTGRES_DB: tensetiger_dev
-    volumes:
-      - ./db_data:/var/lib/postgresql/data
-      - ./db/initdb.d:/docker-entrypoint-initdb.d
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./db/initdb.d
+          target: /docker-entrypoint-initdb.d
 
   pgadmin:
     image: dpage/pgadmin4:latest

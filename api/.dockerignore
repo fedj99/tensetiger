@@ -1,3 +1,63 @@
-**/__pycache__/
-**/*.pyc
+# Python bytecode and cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.mypy_cache/
+.pytest_cache/
+
+# Virtual environment
 venv/
+.venv/
+
+# VSCode
+.vscode/
+
+# Linting and formatting
+.pylintrc
+.black
+
+# Flask specific
+instance/
+.webassets-cache
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Version control
+.git
+.gitignore
+
+# Project specific (customize as needed)
+config.py
+secrets.json
+*.db
+*.sqlite
+
+# Build and distribution
+build/
+dist/
+*.egg-info/
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Documentation
+README.md
+CHANGELOG.md
+docs/
+
+# Test files
+tests/
+test_*.py
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
