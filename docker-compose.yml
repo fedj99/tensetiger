@@ -55,16 +55,16 @@ services:
           path: ./db/initdb.d
           target: /docker-entrypoint-initdb.d
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@email.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_LISTEN_PORT: 8080
-    ports:
-      - 8080:8080
-    volumes:
-      - ./db/servers.json:/pgadmin4/servers.json
-    depends_on:
-      - postgres
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@email.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #     PGADMIN_LISTEN_PORT: 8080
+  #   ports:
+  #     - 8080:8080
+  #   volumes:
+  #     - ./db/servers.json:/pgadmin4/servers.json
+  #   depends_on:
+  #     - postgres
