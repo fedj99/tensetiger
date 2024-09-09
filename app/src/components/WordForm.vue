@@ -206,7 +206,7 @@ function focusFirst() {
                     class="button-contrast"
                     @click="$emit('next')"
                 >
-                    Next <kbd><i class="ri-corner-down-left-fill"></i></kbd>
+                    Next
                 </button>
             </div>
         </Transition>
@@ -229,8 +229,8 @@ function focusFirst() {
         :buttons="['cancel', { text: 'Show Hint', role: 'confirm', class: 'danger' }]"
         @confirm="revealHint()"
         >Reveal translation?
-        <strong class="color-danger">(-{{ gameConfig.hintRevealedPenalty }} points)</strong></Modal
-    >
+        <strong class="color-danger">(-{{ gameConfig.hintRevealedPenalty }} points)</strong>
+    </Modal>
 </template>
 
 <style lang="scss" scoped="">
@@ -382,6 +382,7 @@ input[type="text"].active {
     &.correct {
         background-color: var(--color-success);
         color: var(--color-success-contrast);
+
         .button-contrast {
             @include button-style-outlined-inv(
                 var(--white),
