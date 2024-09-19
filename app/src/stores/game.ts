@@ -50,14 +50,15 @@ export const useGameStore = defineStore("game", () => {
         if (!startTime.value) return 0;
 
         // Find the fraction between max and min time, with 1.0 being min time and 0.0 being max time
-        const { minTimeBonusSeconds: minSeconds, maxTimeBonusSeconds: maxSeconds } = config.value;
-        const frac = 1 - invlerp(minSeconds, maxSeconds, elapsedSeconds.value);
-        console.log("frac", frac);
+        const { minTimeBonusSeconds: minBonusSeconds, maxTimeBonusSeconds: maxBonusSeconds } =
+            config.value;
+        const frac = 1 - invlerp(maxBonusSeconds, minBonusSeconds, elapsedSeconds.value);
 
         // Compute the bonus points
         const { minTimeBonusPoints: minPoints, maxTimeBonusPoints: maxPoints } = config.value;
         const bonusPoints = Math.round(lerp(minPoints, maxPoints, frac));
 
+        if (elapsedSeconds.value > minBonusSeconds) return 0;
         return bonusPoints;
     });
     const totalScore = computed(
