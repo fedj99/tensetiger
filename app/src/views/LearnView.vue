@@ -89,6 +89,7 @@ async function startRound() {
 
         nextTick(() => {
             setTimeout(() => {
+                gameStore.resumeTimer();
                 wordFormRef.value?.focusFirst();
                 console.log("Round started");
             }, 200);
@@ -127,6 +128,10 @@ async function endRound() {
 // Button handlers
 function onSubmit(word: Word, shownKey: WordFormKey, answer: Answer) {
     console.log("Submit", shownKey, answer);
+
+    // Pause timer
+    gameStore.pauseTimer();
+
     // Compute points
     const result = getResult(gameStore.config, word, shownKey, answer);
     gameStore.addPoints(result);
@@ -145,7 +150,11 @@ function onNext() {
 
     if (gameStore.progress >= gameStore.wordCount) {
         endRound();
+        return;
     }
+
+    // Resume timer
+    gameStore.resumeTimer();
 
     // Focus input
     wordFormRef.value?.focusFirst();
