@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { getHighscore, getLatestScores, getScore, getTopKScores, getUser } from "@/api";
+import {
+    getGlobalHighscore,
+    getHighscore,
+    getLatestScores,
+    getScore,
+    getTopKScores,
+    getUser,
+} from "@/api";
 import Fullscreen from "@/components/Fullscreen.vue";
 import GlobalLeaderboard from "@/components/GlobalLeaderboard.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import UserLeaderboard from "@/components/UserLeaderboard.vue";
 import UserResults from "@/components/UserResults.vue";
-import type { Score } from "@/rules";
+import type { LeaderboardScore, Score } from "@/rules";
 import { useErrorsStore } from "@/stores/errors";
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
@@ -23,7 +30,7 @@ const loading = ref(true);
 
 const username = ref<string>(route.query.username as string);
 const score = ref<Score>();
-const topKScores = ref<Score[]>();
+const topKScores = ref<LeaderboardScore[]>();
 const latestScores = ref<Score[]>();
 const personalHighScore = ref<Score>();
 const globalHighScore = ref<Score>();
@@ -48,7 +55,11 @@ async function fetchScores() {
             getTopKScores(TOP_K).then((x) => {
                 const scores = x.data;
                 topKScores.value = scores;
-                globalHighScore.value = scores.length > 0 ? scores[0] : undefined;
+            })
+        );
+        promises.push(
+            getGlobalHighscore().then((x) => {
+                globalHighScore.value = x.data;
             })
         );
 
@@ -120,7 +131,13 @@ async function fetchScores() {
                     <h2>Your latest scores</h2>
                     <UserLeaderboard v-if="latestScores" :scores="latestScores"></UserLeaderboard>
                 </template>
-                <h2>Top {{ TOP_K }} players</h2>
+
+                <div
+                    style="display: flex; gap: 1em; align-items: baseline; justify-content: center"
+                >
+                    <h2>Top {{ TOP_K }} players</h2>
+                    <span>(by total points)</span>
+                </div>
                 <GlobalLeaderboard :scores="topKScores"></GlobalLeaderboard>
             </div>
 

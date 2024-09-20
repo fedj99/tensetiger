@@ -53,6 +53,11 @@ export interface Score {
     score: number;
 }
 
+export interface LeaderboardScore extends Omit<Score, "score"> {
+    high_score: number;
+    total_score: number;
+}
+
 export function isCorrect(gc: GameConfig, expected: string, actual: string) {
     const normalize = (str: string) => str.trim().toLowerCase();
     const separate = (str: string) => str.split(",");

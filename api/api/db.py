@@ -166,18 +166,28 @@ def get_random_subset(table: str, subset_size: int):
         return cur.fetchall()
 
 
+def get_global_highscore():
+    query = sql.SQL('SELECT * FROM scores ORDER BY score DESC, "date" DESC LIMIT 1')
+    with cursor() as cur:
+        cur: RealDictCursor
+        cur.execute(query)
+        return cur.fetchone()
+
+
 def get_top_k_scores(k: int):
     query = sql.SQL(
         """
-    with ranked_scores as (
+with ranked_scores as (
 	select "id", "date", user_id, username, score,
 		rank() over (order by score desc) as "rank",
-		row_number() over (partition by user_id order by score desc) as player_rank
+		row_number() over (partition by user_id order by score desc) as player_rank,
+		sum(score) over (partition by user_id) as total_score
 	from {table}
-    )
-    select "rank", "id", "date", user_id, username, score
-    from ranked_scores
-    where player_rank = 1 and "rank" <= 10
+)
+select "rank", "id", "date", user_id, username, score as high_score, total_score
+from ranked_scores
+where player_rank = 1 and "rank" <= 10
+order by total_score desc
     """
     ).format(table=sql.Identifier(T_SCORES))
     with cursor() as cur:

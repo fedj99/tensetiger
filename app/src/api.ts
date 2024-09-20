@@ -1,5 +1,5 @@
 import axios from "axios";
-import { type GameConfig, type Score } from "./rules";
+import { type GameConfig, type LeaderboardScore, type Score } from "./rules";
 import type { Word } from "./words";
 
 interface User {
@@ -50,7 +50,7 @@ export function getScore(scoreId: number) {
 }
 
 export function getTopKScores(k: number = 5) {
-    return api.get<Score[]>("/scores/topk", { params: { k } });
+    return api.get<LeaderboardScore[]>("/scores/topk", { params: { k } });
 }
 
 export function getLatestScores(userId: number, k: number = 5) {
@@ -59,4 +59,8 @@ export function getLatestScores(userId: number, k: number = 5) {
 
 export function getHighscore(userId: number) {
     return api.get<Score>("/scores/highscore", { params: { user_id: userId } });
+}
+
+export function getGlobalHighscore() {
+    return api.get<Score>("/scores/global-highscore");
 }
