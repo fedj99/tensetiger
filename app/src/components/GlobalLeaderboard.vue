@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { Score } from "@/rules";
+import type { LeaderboardScore } from "@/rules";
 import ScoreTable from "./ScoreTable.vue";
 
 interface Props {
-    scores?: Score[];
+    scores?: LeaderboardScore[];
 }
 
 defineProps<Props>();
