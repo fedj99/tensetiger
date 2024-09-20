@@ -22,7 +22,7 @@ def post_score():
 @bp.get("/scores/topk")
 def get_top_k_scores():
     k = int(request.args.get("k", 5))
-    return jsonify(db.get_top_k(db.T_SCORES, "score", k))
+    return jsonify(db.get_top_k_scores(k=k))
 
 
 @bp.get("/scores/latest")

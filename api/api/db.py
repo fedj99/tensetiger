@@ -166,10 +166,20 @@ def get_random_subset(table: str, subset_size: int):
         return cur.fetchall()
 
 
-def get_top_k(table: str, orderby: str, k: int):
-    query = sql.SQL("SELECT * FROM {table} ORDER BY {orderby} DESC LIMIT %(k)s").format(
-        table=sql.Identifier(table), orderby=sql.Identifier(orderby)
+def get_top_k_scores(k: int):
+    query = sql.SQL(
+        """
+    with ranked_scores as (
+	select "id", "date", user_id, username, score,
+		rank() over (order by score desc) as "rank",
+		row_number() over (partition by user_id order by score desc) as player_rank
+	from {table}
     )
+    select "rank", "id", "date", user_id, username, score
+    from ranked_scores
+    where player_rank = 1 and "rank" <= 10
+    """
+    ).format(table=sql.Identifier(T_SCORES))
     with cursor() as cur:
         cur.execute(query, {"k": k})
         return cur.fetchall()
