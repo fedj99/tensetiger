@@ -1,36 +1,35 @@
 {
-	"folders": [
-		{
-			"path": "api"
-		},
-		{
-			"path": "app"
-		},
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"pylint.importStrategy": "fromEnvironment",
-		"editor.linkedEditing": true,
-		"vue.inlayHints.inlineHandlerLeading": false,
-		"[python]": {
-			"editor.defaultFormatter": "ms-python.black-formatter"
-		},
-		"cSpell.words": [
-			"jsonify"
-		],
-		"sqltools.connections": [
-			{
-				"previewLimit": 50,
-				"server": "localhost",
-				"port": 5432,
-				"driver": "PostgreSQL",
-				"name": "tensetiger_dev",
-				"database": "tensetiger_dev",
-				"username": "tensetiger_dev",
-				"password": "root"
-			}
-		],
-	}
+  "folders": [
+    {
+      "path": "api",
+    },
+    {
+      "path": "app",
+    },
+    {
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "pylint.importStrategy": "fromEnvironment",
+    "editor.linkedEditing": true,
+    "vue.inlayHints.inlineHandlerLeading": false,
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.black-formatter",
+    },
+    "cSpell.words": ["jsonify"],
+    "sqltools.connections": [
+      {
+        "previewLimit": 50,
+        "server": "localhost",
+        "port": 5432,
+        "driver": "PostgreSQL",
+        "name": "tensetiger_dev",
+        "database": "tensetiger_dev",
+        "username": "tensetiger_dev",
+        "password": "root",
+      },
+    ],
+    "eslint.format.enable": true,
+  },
 }

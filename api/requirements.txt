@@ -3,7 +3,7 @@ black
 Flask
 Flask-Cors
 rich
-psycopg2
+psycopg2-binary
 python-dotenv
 gunicorn
 tabulate
