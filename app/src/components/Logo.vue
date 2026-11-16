@@ -34,8 +34,13 @@
     }
 }
 
-[data-theme="light"] .logo-dark {
+// Light is the default, so only show the dark logo when dark is set explicitly
+.logo-dark {
     display: none;
+}
+
+[data-theme="dark"] .logo-dark {
+    display: initial;
 }
 
 [data-theme="dark"] .logo-light {
